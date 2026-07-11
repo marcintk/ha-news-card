@@ -77,13 +77,14 @@ const CARD_STYLES = `
     left: 0;
     width: 60px;
     height: calc(100% - 2px);
-    object-fit: cover;
+    object-fit: contain;
     border-radius: 4px;
   }
 
   .poly-content-cell {
     vertical-align: top;
     padding: 0;
+    min-height: 62px;
   }
 
   .poly-event-title {
