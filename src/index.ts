@@ -69,20 +69,35 @@ const CARD_STYLES = `
   .poly-icon-cell {
     vertical-align: top;
     padding-top: 2px;
+    width: 64px;
   }
 
   .poly-icon {
     border-radius: 4px;
+    display: block;
+  }
+
+  .poly-content-cell {
+    vertical-align: top;
+    padding: 0;
+  }
+
+  .poly-inner {
+    max-height: 62px;
+    overflow: hidden;
   }
 
   .poly-event-title {
-    text-align: left;
     font-size: 15px;
     padding: 0 4px;
   }
 
+  .poly-data-row {
+    display: flex;
+  }
+
   .poly-market-titles {
-    text-align: left;
+    flex: 1;
     font-size: 12px;
     padding: 0 4px;
   }
@@ -93,20 +108,23 @@ const CARD_STYLES = `
   }
 
   .poly-num {
+    width: 40px;
     text-align: right;
     font-size: 12px;
     padding: 0 4px;
   }
 
-  .poly-summary {
-    text-align: start;
+  .poly-footer {
+    display: flex;
     font-size: 10px;
+  }
+
+  .poly-summary {
+    flex: 1;
     padding: 0 4px;
   }
 
   .poly-ends {
-    text-align: end;
-    font-size: 10px;
     padding: 0 4px;
   }
 `;

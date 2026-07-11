@@ -88,11 +88,8 @@ export function polymarketHtml(
     <div class="news-title">PolyMarket (#${scene})</div>
     <table class="news-table poly-table">
       <colgroup>
-        <col style="width:65px" />
+        <col style="width:64px" />
         <col />
-        <col style="width:40px" />
-        <col style="width:40px" />
-        <col style="width:40px" />
       </colgroup>
       ${events.map((event, i) => {
         const bg = rowBg(i);
@@ -100,30 +97,32 @@ export function polymarketHtml(
         const markets = event.markets.slice(0, marketLimit);
         return html`
           <tr style="background-color:${bg}">
-            <td rowspan="3" class="poly-icon-cell">
+            <td class="poly-icon-cell">
               <img width="60" height="62" src="${event.icon}" class="poly-icon" @error=${onImgError} />
             </td>
-            <td class="poly-event-title" colspan="4">${title}</td>
-          </tr>
-          <tr style="background-color:${bg}">
-            <td class="poly-market-titles">
-              ${markets.map((m, mi) => html`<span>${mi + 1}. ${m.title}</span>`)}
+            <td class="poly-content-cell">
+              <div class="poly-inner">
+                <div class="poly-event-title">${title}</div>
+                <div class="poly-data-row">
+                  <div class="poly-market-titles">
+                    ${markets.map((m, mi) => html`<span>${mi + 1}. ${m.title}</span>`)}
+                  </div>
+                  <div class="poly-num">
+                    ${markets.map((m) => html`<span>${humanNumber(m.liquidity)}</span>`)}
+                  </div>
+                  <div class="poly-num">
+                    ${markets.map((m) => html`<span>${humanNumber(m.volume24hr)}</span>`)}
+                  </div>
+                  <div class="poly-num">
+                    ${markets.map((m) => html`<span>${Number.parseFloat(String(m.winPrice)).toFixed(1)}%</span>`)}
+                  </div>
+                </div>
+                <div class="poly-footer">
+                  <span class="poly-summary">L:${humanNumber(event.liquidity)}&nbsp;V:${humanNumber(event.volume24hr)}</span>
+                  <span class="poly-ends">ends ${formatRelativeTime(event.endsAt)}</span>
+                </div>
+              </div>
             </td>
-            <td class="poly-num">
-              ${markets.map((m) => html`<span>${humanNumber(m.liquidity)}</span>`)}
-            </td>
-            <td class="poly-num">
-              ${markets.map((m) => html`<span>${humanNumber(m.volume24hr)}</span>`)}
-            </td>
-            <td class="poly-num">
-              ${markets.map((m) => html`<span>${Number.parseFloat(String(m.winPrice)).toFixed(1)}%</span>`)}
-            </td>
-          </tr>
-          <tr style="background-color:${bg}">
-            <td class="poly-summary">
-              L:${humanNumber(event.liquidity)}&nbsp;V:${humanNumber(event.volume24hr)}
-            </td>
-            <td class="poly-ends" colspan="3">ends ${formatRelativeTime(event.endsAt)}</td>
           </tr>
         `;
       })}
