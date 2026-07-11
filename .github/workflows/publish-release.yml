@@ -1,0 +1,13 @@
+name: Publish Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+      - 'v*.*.*-*'
+
+jobs:
+  release:
+    uses: marcintk/ha-card-shared/.github/workflows/shared-publish-release.yml@v1.0.0
+    permissions:
+      contents: write
