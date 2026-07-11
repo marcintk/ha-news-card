@@ -43,11 +43,17 @@ const CARD_STYLES = `
   }
 
   .text-cell {
-    padding: 6px 4px;
+    padding: 4px;
     vertical-align: top;
     word-wrap: break-word;
     white-space: normal;
     text-align: left;
+    line-height: 1.3;
+  }
+
+  .text-inner {
+    max-height: 67px;
+    overflow: hidden;
   }
 
   .time {

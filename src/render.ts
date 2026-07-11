@@ -1,7 +1,12 @@
 import { html, type TemplateResult } from "lit";
 import type { PolymarketAttributes, RssAttributes } from "./types.js";
 
-const DEFAULT_IMAGE = "https://brands.home-assistant.io";
+const DEFAULT_IMAGE = "https://brands.home-assistant.io/homeassistant/icon.png";
+
+function onImgError(e: Event): void {
+  const img = e.target as HTMLImageElement;
+  if (img.src !== DEFAULT_IMAGE) img.src = DEFAULT_IMAGE;
+}
 
 function formatTimeMins(mins: number): string {
   if (mins < 60) return `${mins}m ago`;
@@ -59,10 +64,10 @@ export function rssHtml(attrs: RssAttributes, limit: number, title: string): Tem
         (item, i) => html`
           <tr style="background-color:${rowBg(i)}">
             <td class="img-cell">
-              <img src="${item.image ?? item.picture ?? DEFAULT_IMAGE}" class="thumb" />
+              <img src="${item.image ?? item.picture ?? DEFAULT_IMAGE}" class="thumb" @error=${onImgError} />
             </td>
             <td class="text-cell">
-              ${item.title}<span class="time">&nbsp;(${formatTimeMins(item.last_updated ?? 0)})</span>
+              <div class="text-inner">${item.title}<span class="time">&nbsp;(${formatTimeMins(item.last_updated ?? 0)})</span></div>
             </td>
           </tr>
         `
@@ -96,7 +101,7 @@ export function polymarketHtml(
         return html`
           <tr style="background-color:${bg}">
             <td rowspan="3" class="poly-icon-cell">
-              <img width="60" height="62" src="${event.icon}" class="poly-icon" />
+              <img width="60" height="62" src="${event.icon}" class="poly-icon" @error=${onImgError} />
             </td>
             <td class="poly-event-title" colspan="4">${title}</td>
           </tr>
