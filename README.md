@@ -128,11 +128,12 @@ Defined under `sources` with `plugin: rss`.
 
 Defined under `sources` with `plugin: polymarket`.
 
-| Option         | Type   | Default      | Description                               |
-| -------------- | ------ | ------------ | ----------------------------------------- |
-| `entity`       | string | **required** | Home Assistant entity ID to read          |
-| `event_limit`  | number | `5`          | Maximum number of events to display       |
-| `market_limit` | number | `3`          | Maximum number of markets shown per event |
+| Option         | Type   | Default      | Description                                             |
+| -------------- | ------ | ------------ | ------------------------------------------------------- |
+| `entity`       | string | **required** | Home Assistant entity ID to read                        |
+| `event_limit`  | number | `5`          | Maximum number of events to display                     |
+| `market_limit` | number | `3`          | Maximum number of markets shown per event               |
+| `title_length` | number | `50`         | Maximum characters of the event title before truncating |
 
 ## Plugins
 
@@ -143,17 +144,17 @@ and renders each entry as a row with a **75 × 67 px thumbnail** on the left and
 relative age on the right. Alternating row backgrounds follow the HA theme
 (`--primary-background-color` / `--secondary-background-color`).
 
-Falls back to `https://brands.home-assistant.io` when an entry has no image.
+Falls back to the Home Assistant logo (`https://brands.home-assistant.io/homeassistant/icon.png`)
+when an entry has no image or the image URL fails to load.
 
 ### Polymarket
 
-Reads `attributes.events` from the entity and renders each event as a three-row group:
+Reads `attributes.events` from the entity and renders each event as a single row:
 
-| Row | Content                                                            |
-| --- | ------------------------------------------------------------------ |
-| 1   | Event icon (spans all rows) + truncated event title (max 55 chars) |
-| 2   | Numbered market titles · Liquidity · 24 h volume · Win %           |
-| 3   | Total liquidity & volume · Time until market closes                |
+| Area  | Content                                                                                                                                                        |
+| ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Left  | Event icon, height fills the row and scales with `market_limit`                                                                                                |
+| Right | Truncated event title (default 50 chars) · Numbered market titles with liquidity, 24 h volume, and win % · Total liquidity & volume · Time until market closes |
 
 Numbers are abbreviated: `1.2K`, `3.4M`, `5.6G`. The header label is derived automatically from
 `attributes.scene` as `PolyMarket (#<scene>)`. The Polymarket sensor is expected to rotate its own
