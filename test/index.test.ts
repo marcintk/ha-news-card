@@ -111,10 +111,15 @@ describe("HaNewsCard", () => {
     const card = makeCard();
     const conn = makeConn();
     card.setConfig({ plugin: "rss", entity: "sensor.abc_feed" });
-    card.hass = { connection: conn, states: { "sensor.abc_feed": { attributes: { entries: [] } } } };
     card.hass = {
       connection: conn,
-      states: { "sensor.abc_feed": { attributes: { entries: [{ title: "New", last_updated: 1 }] } } },
+      states: { "sensor.abc_feed": { attributes: { entries: [] } } },
+    };
+    card.hass = {
+      connection: conn,
+      states: {
+        "sensor.abc_feed": { attributes: { entries: [{ title: "New", last_updated: 1 }] } },
+      },
     };
     vi.runAllTimers();
     expect(card.shadowRoot!.querySelector(".text-cell")?.textContent).toContain("New");
@@ -126,9 +131,18 @@ describe("HaNewsCard", () => {
     const card = makeCard();
     const conn = makeConn();
     card.setConfig({ plugin: "rss", entity: "sensor.abc_feed" });
-    card.hass = { connection: conn, states: { "sensor.abc_feed": { attributes: { entries: [] } } } };
-    card.hass = { connection: conn, states: { "sensor.abc_feed": { attributes: { entries: [{ title: "A", last_updated: 1 }] } } } };
-    card.hass = { connection: conn, states: { "sensor.abc_feed": { attributes: { entries: [{ title: "B", last_updated: 2 }] } } } };
+    card.hass = {
+      connection: conn,
+      states: { "sensor.abc_feed": { attributes: { entries: [] } } },
+    };
+    card.hass = {
+      connection: conn,
+      states: { "sensor.abc_feed": { attributes: { entries: [{ title: "A", last_updated: 1 }] } } },
+    };
+    card.hass = {
+      connection: conn,
+      states: { "sensor.abc_feed": { attributes: { entries: [{ title: "B", last_updated: 2 }] } } },
+    };
     vi.runAllTimers();
     expect(card.shadowRoot!.querySelector(".text-cell")?.textContent).toContain("B");
     vi.useRealTimers();
@@ -140,7 +154,10 @@ describe("HaNewsCard", () => {
     const conn = makeConn();
     card.setConfig({ plugin: "rss", entity: "sensor.abc_feed" });
     card.hass = { connection: conn, states: { "sensor.abc_feed": { attributes: {} } } };
-    card.hass = { connection: conn, states: { "sensor.abc_feed": { attributes: { entries: [] } } } };
+    card.hass = {
+      connection: conn,
+      states: { "sensor.abc_feed": { attributes: { entries: [] } } },
+    };
     (card as any)._hass = null;
     expect(() => vi.runAllTimers()).not.toThrow();
     vi.useRealTimers();
@@ -157,7 +174,10 @@ describe("HaNewsCard", () => {
     };
     const card = makeCard();
     card.setConfig({ plugin: "rss", entity: "sensor.abc_feed", title: "Feed" });
-    card.hass = { connection: conn, states: { "sensor.abc_feed": { attributes: { entries: [] } } } };
+    card.hass = {
+      connection: conn,
+      states: { "sensor.abc_feed": { attributes: { entries: [] } } },
+    };
     capturedCb!({ data: { entity_id: "sensor.abc_feed" } });
     vi.runAllTimers();
     expect(card.shadowRoot!.querySelector(".news-title")?.textContent).toBe("Feed");
@@ -177,7 +197,10 @@ describe("HaNewsCard", () => {
     const conn = makeConn();
     card.setConfig({ plugin: "rss", entity: "sensor.abc_feed" });
     card.hass = { connection: conn, states: { "sensor.abc_feed": { attributes: {} } } };
-    card.hass = { connection: conn, states: { "sensor.abc_feed": { attributes: { entries: [] } } } };
+    card.hass = {
+      connection: conn,
+      states: { "sensor.abc_feed": { attributes: { entries: [] } } },
+    };
     card.disconnectedCallback();
     expect(() => vi.runAllTimers()).not.toThrow();
     vi.useRealTimers();

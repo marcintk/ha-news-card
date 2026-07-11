@@ -56,7 +56,12 @@ describe("SubscriptionManager", () => {
     const staleUnsub = vi.fn();
     let resolve!: (fn: () => void) => void;
     const conn: Conn = {
-      subscribeEvents: vi.fn().mockImplementation(() => new Promise<() => void>((res) => { resolve = res; })),
+      subscribeEvents: vi.fn().mockImplementation(
+        () =>
+          new Promise<() => void>((res) => {
+            resolve = res;
+          })
+      ),
     };
     sm.subscribe(conn, new Set(["sensor.a"]), vi.fn());
     sm.clear(); // bumps gen before promise resolves

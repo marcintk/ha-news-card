@@ -17,10 +17,9 @@ layout with a large thumbnail on the left and headline text on the right.
 The card reads data from Home Assistant sensor entities. You need at least one of:
 
 - **RSS plugin** — any HA integration that stores feed entries in a sensor's `attributes.entries`
-  array (e.g. the
-  [feedparser](https://github.com/custom-components/feedparser) HACS integration). Each entry
-  should expose `title`, `last_updated` (minutes since published), and optionally `image` /
-  `picture`.
+  array (e.g. the [feedparser](https://github.com/custom-components/feedparser) HACS integration).
+  Each entry should expose `title`, `last_updated` (minutes since published), and optionally `image`
+  / `picture`.
 - **Polymarket plugin** — a sensor whose attributes contain a `events` array of Polymarket
   prediction markets (e.g. a custom REST/template sensor scraping the Polymarket API). Each event
   should expose `title`, `icon`, `liquidity`, `volume24hr`, `endsAt`, and a `markets` array.
@@ -74,14 +73,14 @@ height: 400px
 
 ### Options
 
-| Option         | Type   | Default        | Description                                            |
-| -------------- | ------ | -------------- | ------------------------------------------------------ |
-| `plugin`       | string | **required**   | Data source: `rss` or `polymarket`                     |
-| `entity`       | string | **required**   | Home Assistant entity ID to read                       |
-| `title`        | string | entity ID      | Header label shown above the card (RSS only)           |
-| `limit`        | number | `5`            | Maximum number of entries / events to display          |
-| `market_limit` | number | `3`            | Max markets shown per Polymarket event (polymarket only) |
-| `height`       | string | auto           | Card height as a CSS value, e.g. `400px`; omit to fit content |
+| Option         | Type   | Default      | Description                                                   |
+| -------------- | ------ | ------------ | ------------------------------------------------------------- |
+| `plugin`       | string | **required** | Data source: `rss` or `polymarket`                            |
+| `entity`       | string | **required** | Home Assistant entity ID to read                              |
+| `title`        | string | entity ID    | Header label shown above the card (RSS only)                  |
+| `limit`        | number | `5`          | Maximum number of entries / events to display                 |
+| `market_limit` | number | `3`          | Max markets shown per Polymarket event (polymarket only)      |
+| `height`       | string | auto         | Card height as a CSS value, e.g. `400px`; omit to fit content |
 
 ## Plugins
 
@@ -98,11 +97,11 @@ Falls back to `https://brands.home-assistant.io` when an entry has no image.
 
 Reads `attributes.events` from the entity and renders each event as a three-row group:
 
-| Row | Content |
-| --- | ------- |
-| 1 | Event icon (spans all rows) + truncated event title (max 55 chars) |
-| 2 | Numbered market titles · Liquidity · 24 h volume · Win % |
-| 3 | Total liquidity & volume · Time until market closes |
+| Row | Content                                                            |
+| --- | ------------------------------------------------------------------ |
+| 1   | Event icon (spans all rows) + truncated event title (max 55 chars) |
+| 2   | Numbered market titles · Liquidity · 24 h volume · Win %           |
+| 3   | Total liquidity & volume · Time until market closes                |
 
 Numbers are abbreviated: `1.2K`, `3.4M`, `5.6G`. The header label is derived automatically from
 `attributes.scene` as `PolyMarket (#<scene>)`.

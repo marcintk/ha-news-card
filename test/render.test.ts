@@ -40,14 +40,21 @@ describe("rssHtml", () => {
   it("sorts entries with missing last_updated as 0", () => {
     const el = doc(
       rssHtml(
-        { entries: [{ title: "Has Time", last_updated: 5 }, { title: "No Time" }, { title: "Mid Time", last_updated: 3 }] },
-        5, "F"
+        {
+          entries: [
+            { title: "Has Time", last_updated: 5 },
+            { title: "No Time" },
+            { title: "Mid Time", last_updated: 3 },
+          ],
+        },
+        5,
+        "F"
       )
     );
     const cells = el.querySelectorAll(".text-cell");
-    expect(cells[0]?.textContent).toContain("No Time");    // 0
-    expect(cells[1]?.textContent).toContain("Mid Time");   // 3
-    expect(cells[2]?.textContent).toContain("Has Time");   // 5
+    expect(cells[0]?.textContent).toContain("No Time"); // 0
+    expect(cells[1]?.textContent).toContain("Mid Time"); // 3
+    expect(cells[2]?.textContent).toContain("Has Time"); // 5
   });
 
   it("handles missing entries array", () => {
@@ -82,7 +89,9 @@ describe("rssHtml", () => {
   });
 
   it("falls back to picture field when image absent", () => {
-    const el = doc(rssHtml({ entries: [{ title: "X", picture: "http://img/pic.jpg" }] }, 1, "Feed"));
+    const el = doc(
+      rssHtml({ entries: [{ title: "X", picture: "http://img/pic.jpg" }] }, 1, "Feed")
+    );
     expect(el.querySelector<HTMLImageElement>(".thumb")?.src).toContain("pic.jpg");
   });
 
