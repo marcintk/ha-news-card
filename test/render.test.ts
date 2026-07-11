@@ -31,7 +31,7 @@ describe("rssHtml", () => {
 
   it("sorts by last_updated ascending (smallest = most recent)", () => {
     const el = doc(rssHtml(attrs, 5, "Feed"));
-    const cells = el.querySelectorAll(".text-cell");
+    const cells = el.querySelectorAll(".rss-text-cell");
     expect(cells[0]?.textContent).toContain("Story B");
     expect(cells[1]?.textContent).toContain("Story A");
     expect(cells[2]?.textContent).toContain("Story C");
@@ -51,7 +51,7 @@ describe("rssHtml", () => {
         "F"
       )
     );
-    const cells = el.querySelectorAll(".text-cell");
+    const cells = el.querySelectorAll(".rss-text-cell");
     expect(cells[0]?.textContent).toContain("No Time"); // 0
     expect(cells[1]?.textContent).toContain("Mid Time"); // 3
     expect(cells[2]?.textContent).toContain("Has Time"); // 5
@@ -59,32 +59,32 @@ describe("rssHtml", () => {
 
   it("handles missing entries array", () => {
     const el = doc(rssHtml({}, 5, "Feed"));
-    expect(el.querySelectorAll(".text-cell")).toHaveLength(0);
+    expect(el.querySelectorAll(".rss-text-cell")).toHaveLength(0);
   });
 
   it("respects limit", () => {
     const el = doc(rssHtml(attrs, 2, "Feed"));
-    expect(el.querySelectorAll(".text-cell")).toHaveLength(2);
+    expect(el.querySelectorAll(".rss-text-cell")).toHaveLength(2);
   });
 
   it("shows minutes ago", () => {
     const el = doc(rssHtml(attrs, 5, "Feed"));
-    expect(el.querySelectorAll(".time")[0]?.textContent).toContain("5m ago");
+    expect(el.querySelectorAll(".rss-time")[0]?.textContent).toContain("5m ago");
   });
 
   it("shows hours ago", () => {
     const el = doc(rssHtml({ entries: [{ title: "X", last_updated: 90 }] }, 1, "Feed"));
-    expect(el.querySelector(".time")?.textContent).toContain("1h ago");
+    expect(el.querySelector(".rss-time")?.textContent).toContain("1h ago");
   });
 
   it("shows days ago", () => {
     const el = doc(rssHtml({ entries: [{ title: "X", last_updated: 1500 }] }, 1, "Feed"));
-    expect(el.querySelector(".time")?.textContent).toContain("1d ago");
+    expect(el.querySelector(".rss-time")?.textContent).toContain("1d ago");
   });
 
   it("uses image field", () => {
     const el = doc(rssHtml(attrs, 5, "Feed"));
-    const imgs = el.querySelectorAll<HTMLImageElement>(".thumb");
+    const imgs = el.querySelectorAll<HTMLImageElement>(".rss-thumb");
     expect(imgs[0]?.src).toContain("b.jpg");
   });
 
@@ -92,24 +92,26 @@ describe("rssHtml", () => {
     const el = doc(
       rssHtml({ entries: [{ title: "X", picture: "http://img/pic.jpg" }] }, 1, "Feed")
     );
-    expect(el.querySelector<HTMLImageElement>(".thumb")?.src).toContain("pic.jpg");
+    expect(el.querySelector<HTMLImageElement>(".rss-thumb")?.src).toContain("pic.jpg");
   });
 
   it("falls back to default image when no image or picture", () => {
     const el = doc(rssHtml({ entries: [{ title: "X" }] }, 1, "Feed"));
-    expect(el.querySelector<HTMLImageElement>(".thumb")?.src).toContain("brands.home-assistant.io");
+    expect(el.querySelector<HTMLImageElement>(".rss-thumb")?.src).toContain(
+      "brands.home-assistant.io"
+    );
   });
 
   it("replaces broken image src with HA fallback on error", () => {
     const el = doc(rssHtml({ entries: [{ title: "X", image: "http://bad/img.jpg" }] }, 1, "Feed"));
-    const img = el.querySelector<HTMLImageElement>(".thumb")!;
+    const img = el.querySelector<HTMLImageElement>(".rss-thumb")!;
     img.dispatchEvent(new Event("error"));
     expect(img.src).toContain("brands.home-assistant.io/homeassistant/icon.png");
   });
 
   it("does not loop when fallback image itself errors", () => {
     const el = doc(rssHtml({ entries: [{ title: "X" }] }, 1, "Feed"));
-    const img = el.querySelector<HTMLImageElement>(".thumb")!;
+    const img = el.querySelector<HTMLImageElement>(".rss-thumb")!;
     // src is already the fallback — firing error again must not change it
     const before = img.src;
     img.dispatchEvent(new Event("error"));
