@@ -14,6 +14,7 @@ export interface PolymarketSource {
   entity: string;
   event_limit?: number;
   market_limit?: number;
+  title_length?: number;
 }
 
 export type Source = RssSource | PolymarketSource;
