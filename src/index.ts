@@ -8,8 +8,7 @@ const CARD_STYLES = `
   :host { display: block; }
 
   ha-card {
-    --rss-row-height: 67px;
-    --poly-row-height: 90px;
+    --row-height: 67px;
     padding: 2px;
     box-sizing: border-box;
     color: var(--secondary-text-color, darkgray);
@@ -38,7 +37,7 @@ const CARD_STYLES = `
 
   .rss-thumb {
     width: 75px;
-    height: var(--rss-row-height);
+    height: var(--row-height);
     border-radius: 4px;
     object-fit: cover;
     display: block;
@@ -51,7 +50,7 @@ const CARD_STYLES = `
   }
 
   .rss-text-inner {
-    max-height: var(--rss-row-height);
+    max-height: var(--row-height);
     overflow: hidden;
   }
 
@@ -71,7 +70,7 @@ const CARD_STYLES = `
 
   .poly-thumb {
     width: 75px;
-    height: var(--poly-row-height);
+    height: var(--row-height);
     border-radius: 4px;
     object-fit: cover;
     display: block;
