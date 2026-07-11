@@ -13,6 +13,7 @@ const CARD_STYLES = `
     font-family: var(--paper-font-body1_-_font-family, sans-serif);
     color: var(--secondary-text-color, darkgray);
     font-size: 18px;
+    line-height: 1.2;
     overflow: hidden;
   }
 
