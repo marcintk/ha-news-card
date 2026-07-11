@@ -15,6 +15,13 @@ unified layout with a large thumbnail on the left and headline text on the right
 The card rotates through all configured entities on a timer, cycling from RSS feed to RSS feed to
 Polymarket and back.
 
+<table>
+  <tr>
+    <td align="center"><img src="docs/preview-rss.png" alt="RSS preview" /><br /><sub>RSS feed</sub></td>
+    <td align="center"><img src="docs/preview-polymarket.png" alt="Polymarket preview" /><br /><sub>Polymarket events</sub></td>
+  </tr>
+</table>
+
 ## Requirements
 
 The card reads data from Home Assistant sensor entities. You need at least one of:
