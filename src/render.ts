@@ -80,7 +80,7 @@ export function polymarketHtml(
   attrs: PolymarketAttributes,
   eventLimit: number,
   marketLimit: number,
-  titleLength = 55
+  titleLength = 50
 ): TemplateResult {
   const events = (attrs.events ?? []).slice(0, eventLimit);
   const scene = attrs.scene ?? "unknown";
