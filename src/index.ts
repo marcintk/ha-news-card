@@ -115,10 +115,20 @@ function buildSlots(config: CardConfig): Slot[] {
   for (const source of config.sources) {
     if (source.plugin === "rss") {
       for (const ref of source.entities) {
-        slots.push({ plugin: "rss", entity: ref.entity, title: ref.title ?? ref.entity, limit: source.limit ?? 5 });
+        slots.push({
+          plugin: "rss",
+          entity: ref.entity,
+          title: ref.title ?? ref.entity,
+          limit: source.limit ?? 5,
+        });
       }
     } else if (source.plugin === "polymarket") {
-      slots.push({ plugin: "polymarket", entity: source.entity, event_limit: source.event_limit ?? 5, market_limit: source.market_limit ?? 3 });
+      slots.push({
+        plugin: "polymarket",
+        entity: source.entity,
+        event_limit: source.event_limit ?? 5,
+        market_limit: source.market_limit ?? 3,
+      });
     }
   }
   return slots;
@@ -223,7 +233,9 @@ class HaNewsCard extends HTMLElement {
       const slot = this._slots[this._slotIdx];
       const attrs = this._hass.states[slot.entity]?.attributes ?? {};
       const { height } = this._config;
-      const haCardStyle = height ? `height:${height};min-height:${height};max-height:${height};` : undefined;
+      const haCardStyle = height
+        ? `height:${height};min-height:${height};max-height:${height};`
+        : undefined;
 
       const content =
         slot.plugin === "rss"

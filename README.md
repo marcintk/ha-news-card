@@ -9,8 +9,8 @@
 [![CI](https://github.com/marcintk/ha-news-card/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/marcintk/ha-news-card/actions/workflows/build-and-test.yml)
 
 Home Assistant custom Lovelace card displaying news from RSS feeds and
-[Polymarket](https://polymarket.com) prediction events — one card, multiple sources, a single unified
-layout with a large thumbnail on the left and headline text on the right.
+[Polymarket](https://polymarket.com) prediction events — one card, multiple sources, a single
+unified layout with a large thumbnail on the left and headline text on the right.
 
 The card rotates through all configured entities on a timer, cycling from RSS feed to RSS feed to
 Polymarket and back.
@@ -58,7 +58,7 @@ Add a **Manual card** to your dashboard and paste one of the examples below.
 
 ```yaml
 type: custom:ha-news-card
-rotate_interval: 10       # seconds per entity
+rotate_interval: 10 # seconds per entity
 height: 560px
 sources:
   - plugin: rss
@@ -108,30 +108,30 @@ The card rotates through each entity in order: ABC News → BBC News → Polymar
 
 ### Top-level options
 
-| Option            | Type   | Default | Description                                                    |
-| ----------------- | ------ | ------- | -------------------------------------------------------------- |
-| `sources`         | list   | **required** | One or more plugin source blocks (see below)              |
-| `rotate_interval` | number | `10`    | Seconds to display each entity before advancing to the next    |
-| `height`          | string | auto    | Card height as a CSS value, e.g. `560px`; omit to fit content  |
+| Option            | Type   | Default      | Description                                                   |
+| ----------------- | ------ | ------------ | ------------------------------------------------------------- |
+| `sources`         | list   | **required** | One or more plugin source blocks (see below)                  |
+| `rotate_interval` | number | `10`         | Seconds to display each entity before advancing to the next   |
+| `height`          | string | auto         | Card height as a CSS value, e.g. `560px`; omit to fit content |
 
 ### RSS source options
 
 Defined under `sources` with `plugin: rss`.
 
-| Option     | Type   | Default      | Description                                         |
-| ---------- | ------ | ------------ | --------------------------------------------------- |
+| Option     | Type   | Default      | Description                                            |
+| ---------- | ------ | ------------ | ------------------------------------------------------ |
 | `entities` | list   | **required** | List of `{ entity, title? }` objects to rotate through |
-| `limit`    | number | `5`          | Maximum number of entries to display per entity     |
+| `limit`    | number | `5`          | Maximum number of entries to display per entity        |
 
 ### Polymarket source options
 
 Defined under `sources` with `plugin: polymarket`.
 
-| Option         | Type   | Default      | Description                                              |
-| -------------- | ------ | ------------ | -------------------------------------------------------- |
-| `entity`       | string | **required** | Home Assistant entity ID to read                         |
-| `event_limit`  | number | `5`          | Maximum number of events to display                      |
-| `market_limit` | number | `3`          | Maximum number of markets shown per event                |
+| Option         | Type   | Default      | Description                               |
+| -------------- | ------ | ------------ | ----------------------------------------- |
+| `entity`       | string | **required** | Home Assistant entity ID to read          |
+| `event_limit`  | number | `5`          | Maximum number of events to display       |
+| `market_limit` | number | `3`          | Maximum number of markets shown per event |
 
 ## Plugins
 
