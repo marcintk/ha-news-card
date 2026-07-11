@@ -99,6 +99,22 @@ describe("rssHtml", () => {
     const el = doc(rssHtml({ entries: [{ title: "X" }] }, 1, "Feed"));
     expect(el.querySelector<HTMLImageElement>(".thumb")?.src).toContain("brands.home-assistant.io");
   });
+
+  it("replaces broken image src with HA fallback on error", () => {
+    const el = doc(rssHtml({ entries: [{ title: "X", image: "http://bad/img.jpg" }] }, 1, "Feed"));
+    const img = el.querySelector<HTMLImageElement>(".thumb")!;
+    img.dispatchEvent(new Event("error"));
+    expect(img.src).toContain("brands.home-assistant.io/homeassistant/icon.png");
+  });
+
+  it("does not loop when fallback image itself errors", () => {
+    const el = doc(rssHtml({ entries: [{ title: "X" }] }, 1, "Feed"));
+    const img = el.querySelector<HTMLImageElement>(".thumb")!;
+    // src is already the fallback — firing error again must not change it
+    const before = img.src;
+    img.dispatchEvent(new Event("error"));
+    expect(img.src).toBe(before);
+  });
 });
 
 describe("polymarketHtml", () => {
