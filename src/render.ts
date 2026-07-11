@@ -89,7 +89,7 @@ export function polymarketHtml(
     <div class="news-title">PolyMarket (#${scene})</div>
     <table class="news-table poly-table">
       <colgroup>
-        <col style="width:64px" />
+        <col style="width:78px" />
         <col />
       </colgroup>
       ${events.map((event, i) => {
@@ -100,7 +100,7 @@ export function polymarketHtml(
         return html`
           <tr style="background-color:${bg}">
             <td class="poly-icon-cell">
-              <img width="60" src="${event.icon}" class="poly-icon" @error=${onImgError} />
+              <img src="${event.icon}" class="poly-icon" @error=${onImgError} />
             </td>
             <td class="poly-content-cell">
               <div class="poly-event-title">${title}</div>

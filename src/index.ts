@@ -67,24 +67,21 @@ const CARD_STYLES = `
   }
 
   .poly-icon-cell {
-    position: relative;
-    width: 64px;
+    padding: 4px;
+    vertical-align: top;
   }
 
   .poly-icon {
-    position: absolute;
-    top: 2px;
-    left: 0;
-    width: 60px;
-    height: calc(100% - 2px);
+    width: 75px;
+    height: 67px;
     object-fit: contain;
     border-radius: 4px;
+    display: block;
   }
 
   .poly-content-cell {
     vertical-align: top;
     padding: 0;
-    min-height: 62px;
   }
 
   .poly-event-title {
