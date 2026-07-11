@@ -1,0 +1,38 @@
+@node_modules/ha-card-shared/CLAUDE-SHARED.md @package.json @TODO.md
+
+# ha-news-card
+
+## Module Map
+
+Every `src/*.ts` module has a corresponding `test/*.test.ts`. New source files must ship with their
+test file.
+
+| Source file           | Test file                   | Responsibility                                                                                       |
+| --------------------- | --------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `src/index.ts`        | `test/index.test.ts`        | Custom element class, HA lifecycle hooks, slot rotation, render orchestration, CSS styles            |
+| `src/render.ts`       | `test/render.test.ts`       | `rssHtml()`, `polymarketHtml()` — Lit HTML generators for each plugin type                           |
+| `src/subscription.ts` | `test/subscription.test.ts` | `SubscriptionManager` — WebSocket subscribe/unsubscribe with stale-gen guard                         |
+| `src/types.ts`        | _(types only, no logic)_    | All shared interfaces: `CardConfig`, `Source`, `RssAttributes`, `PolymarketAttributes`, `Hass`, etc. |
+
+## Architecture Notes
+
+- **Shadow DOM / Lit rendering**: Lit's `render()` patches the shadow DOM on every render —
+  efficient diffing, no full `innerHTML` replacement.
+- **Slot rotation**: `buildSlots()` flattens `config.sources` into a `Slot[]` — one entry per RSS
+  entity or Polymarket entity. `_slotIdx` advances on a `setInterval` (`rotate_interval` seconds,
+  default 10). Only one slot is rendered at a time.
+- **WebSocket subscription**: card subscribes to `state_changed` events on first `set hass`;
+  callback calls `_scheduleRender()`, which arms a 500 ms debounce timer. Rendering always uses
+  `_hass.states`, not the event payload.
+- **Security**: Lit auto-escapes all interpolated text values in `html` templates — no manual
+  escaping needed in render paths.
+
+## TODO.md discipline
+
+`TODO.md` is the canonical list of known bugs and open issues.
+
+- **When a new bug is found** — add to `TODO.md` with a one-line summary, the affected file:line,
+  and a brief fix description.
+- **When a bug is fixed and merged** — remove its entry in the same PR that fixes it.
+- **Do not leave stale entries.** If a fix makes an entry obsolete, remove it and note why in the PR
+  description.
