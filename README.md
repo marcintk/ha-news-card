@@ -17,8 +17,8 @@ Polymarket and back.
 
 <table>
   <tr>
-    <td align="center"><img src="docs/preview-rss.png" alt="RSS preview" /><br /><sub>RSS feed</sub></td>
-    <td align="center"><img src="docs/preview-polymarket.png" alt="Polymarket preview" /><br /><sub>Polymarket events</sub></td>
+    <td align="center"><img src="https://raw.githubusercontent.com/marcintk/ha-news-card/main/docs/preview-rss.png" alt="RSS preview" /><br /><sub>RSS feed</sub></td>
+    <td align="center"><img src="https://raw.githubusercontent.com/marcintk/ha-news-card/main/docs/preview-polymarket.png" alt="Polymarket preview" /><br /><sub>Polymarket events</sub></td>
   </tr>
 </table>
 
