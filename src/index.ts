@@ -13,6 +13,8 @@ const CARD_STYLES = `
     padding: 2px;
     box-sizing: border-box;
     color: var(--secondary-text-color, darkgray);
+    font-size: 18px;
+    line-height: 1.2;
     overflow: hidden;
   }
 
@@ -71,7 +73,7 @@ const CARD_STYLES = `
     width: 75px;
     height: var(--poly-row-height);
     border-radius: 4px;
-    object-fit: contain;
+    object-fit: cover;
     display: block;
   }
 
