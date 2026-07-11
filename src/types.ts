@@ -22,6 +22,7 @@ export interface CardConfig {
   sources: Source[];
   rotate_interval?: number;
   height?: string;
+  title_color?: string;
 }
 
 export interface RssEntry {

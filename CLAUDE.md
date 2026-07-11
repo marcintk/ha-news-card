@@ -26,6 +26,12 @@ test file.
   `_hass.states`, not the event payload.
 - **Security**: Lit auto-escapes all interpolated text values in `html` templates — no manual
   escaping needed in render paths.
+- **Color theming**: overridable colours use a two-layer CSS variable pattern —
+  `var(--ha-news-<name>-color, <theme-or-hardcoded-fallback>)`. The card injects
+  `--ha-news-<name>-color` as an inline style on `<ha-card>` when the matching `CardConfig` option
+  is set. Static styles stay static; only the variable value changes per render. New overridable
+  colours follow the same pattern: add the CSS variable + fallback in `CARD_STYLES`, add the option
+  to `CardConfig`, and inject it in `_render()`.
 
 ## TODO.md discipline
 

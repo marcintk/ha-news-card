@@ -108,11 +108,12 @@ The card rotates through each entity in order: ABC News → BBC News → Polymar
 
 ### Top-level options
 
-| Option            | Type   | Default      | Description                                                   |
-| ----------------- | ------ | ------------ | ------------------------------------------------------------- |
-| `sources`         | list   | **required** | One or more plugin source blocks (see below)                  |
-| `rotate_interval` | number | `10`         | Seconds to display each entity before advancing to the next   |
-| `height`          | string | auto         | Card height as a CSS value, e.g. `560px`; omit to fit content |
+| Option            | Type   | Default      | Description                                                                    |
+| ----------------- | ------ | ------------ | ------------------------------------------------------------------------------ |
+| `sources`         | list   | **required** | One or more plugin source blocks (see below)                                   |
+| `rotate_interval` | number | `10`         | Seconds to display each entity before advancing to the next                    |
+| `height`          | string | auto         | Card height as a CSS value, e.g. `560px`; omit to fit content                  |
+| `title_color`     | string | `#2196F3`    | Feed title colour; any CSS value, e.g. `red`, `#ff0000`, `var(--accent-color)` |
 
 ### RSS source options
 

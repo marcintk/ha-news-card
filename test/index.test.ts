@@ -77,6 +77,14 @@ describe("HaNewsCard", () => {
     expect(haCard?.getAttribute("style")).toContain("300px");
   });
 
+  it("applies title_color as CSS variable on ha-card", () => {
+    const card = makeCard();
+    card.setConfig({ ...rssConfig(), title_color: "red" });
+    card.hass = makeHass("sensor.abc_feed", { entries: [] });
+    const haCard = card.shadowRoot!.querySelector("ha-card") as HTMLElement;
+    expect(haCard?.getAttribute("style")).toContain("--ha-news-title-color:red");
+  });
+
   it("handles missing entity in hass states", () => {
     const card = makeCard();
     card.setConfig(rssConfig());

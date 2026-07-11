@@ -17,7 +17,7 @@ const CARD_STYLES = `
   }
 
   .news-title {
-    color: #2196F3;
+    color: var(--ha-news-title-color, #2196F3);
     letter-spacing: 0.1em;
     padding: 2px;
     font-weight: normal;
@@ -52,7 +52,7 @@ const CARD_STYLES = `
 
   .time {
     font-size: 14px;
-    color: gray;
+    color: var(--secondary-text-color, darkgray);
   }
 
   .poly-table {
@@ -232,10 +232,14 @@ class HaNewsCard extends HTMLElement {
       if (!this._config || !this._hass) throw new Error("render called before config/hass set");
       const slot = this._slots[this._slotIdx];
       const attrs = this._hass.states[slot.entity]?.attributes ?? {};
-      const { height } = this._config;
-      const haCardStyle = height
-        ? `height:${height};min-height:${height};max-height:${height};`
-        : undefined;
+      const { height, title_color } = this._config;
+      const haCardStyle =
+        [
+          height && `height:${height};min-height:${height};max-height:${height}`,
+          title_color && `--ha-news-title-color:${title_color}`,
+        ]
+          .filter(Boolean)
+          .join(";") || undefined;
 
       const content =
         slot.plugin === "rss"
