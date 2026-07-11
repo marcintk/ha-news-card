@@ -44,6 +44,20 @@ describe("HaNewsCard", () => {
     expect(() => card.setConfig({ sources: [] })).toThrow("sources is required");
   });
 
+  it("throws when all sources have unknown plugin", () => {
+    const card = makeCard();
+    expect(() => card.setConfig({ sources: [{ plugin: "unknown" as "rss" }] })).toThrow(
+      "sources must contain at least one entity"
+    );
+  });
+
+  it("falls back to entity id when rss title is omitted", () => {
+    const card = makeCard();
+    card.setConfig({ sources: [{ plugin: "rss", entities: [{ entity: "sensor.abc_feed" }] }] });
+    card.hass = makeHass("sensor.abc_feed", { entries: [] });
+    expect(card.shadowRoot?.querySelector(".news-title")?.textContent).toBe("sensor.abc_feed");
+  });
+
   it("renders rss card", () => {
     const card = makeCard();
     card.setConfig(rssConfig());
@@ -286,6 +300,70 @@ describe("HaNewsCard", () => {
     vi.advanceTimersByTime(10000);
     expect(card.shadowRoot!.querySelector(".news-title")?.textContent).toBe("ABC");
     vi.useRealTimers();
+  });
+
+  it("hass update with unchanged state skips re-render", () => {
+    vi.useFakeTimers();
+    const conn = makeConn();
+    const card = makeCard();
+    card.setConfig(rssConfig());
+    const state = { attributes: { entries: [] } };
+    const hass = { connection: conn, states: { "sensor.abc_feed": state } };
+    card.hass = hass;
+    card.hass = hass; // same state reference — no change
+    expect((card as any)._renderTimer).toBeNull();
+    vi.useRealTimers();
+  });
+
+  it("rotation uses default interval when rotate_interval not set", () => {
+    vi.useFakeTimers();
+    const conn = makeConn();
+    const card = makeCard();
+    card.setConfig({
+      sources: [
+        { plugin: "rss", entities: [{ entity: "sensor.abc_feed", title: "ABC" }] },
+        { plugin: "rss", entities: [{ entity: "sensor.wsj_feed", title: "WSJ" }] },
+      ],
+      // no rotate_interval — defaults to 10s
+    });
+    card.hass = {
+      connection: conn,
+      states: {
+        "sensor.abc_feed": { attributes: { entries: [] } },
+        "sensor.wsj_feed": { attributes: { entries: [] } },
+      },
+    };
+    vi.advanceTimersByTime(10000);
+    expect(card.shadowRoot?.querySelector(".news-title")?.textContent).toBe("WSJ");
+    vi.useRealTimers();
+  });
+
+  it("rotation timer no-ops when hass cleared before firing", () => {
+    vi.useFakeTimers();
+    const conn = makeConn();
+    const card = makeCard();
+    card.setConfig({
+      sources: [
+        { plugin: "rss", entities: [{ entity: "sensor.abc_feed", title: "ABC" }] },
+        { plugin: "rss", entities: [{ entity: "sensor.wsj_feed", title: "WSJ" }] },
+      ],
+      rotate_interval: 10,
+    });
+    card.hass = {
+      connection: conn,
+      states: {
+        "sensor.abc_feed": { attributes: { entries: [] } },
+        "sensor.wsj_feed": { attributes: { entries: [] } },
+      },
+    };
+    (card as any)._hass = null;
+    expect(() => vi.advanceTimersByTime(10000)).not.toThrow();
+    vi.useRealTimers();
+  });
+
+  it("getCardSize returns default when called before setConfig", () => {
+    const card = makeCard();
+    expect(card.getCardSize()).toBeGreaterThanOrEqual(1);
   });
 
   it("no rotation timer when only one slot", () => {

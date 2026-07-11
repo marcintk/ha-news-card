@@ -163,7 +163,7 @@ class HaNewsCard extends HTMLElement {
     this._config = config;
     this._slots = slots;
     this._slotIdx = 0;
-    this._startRotation();
+    this._startRotation(config);
     this._subscription.clear();
     if (this._hass) {
       this._render();
@@ -188,13 +188,13 @@ class HaNewsCard extends HTMLElement {
     if (changed) this._scheduleRender();
   }
 
-  private _startRotation(): void {
+  private _startRotation(config: CardConfig): void {
     if (this._rotateTimer) {
       clearInterval(this._rotateTimer);
       this._rotateTimer = null;
     }
     if (this._slots.length <= 1) return;
-    const interval = (this._config?.rotate_interval ?? 10) * 1000;
+    const interval = (config.rotate_interval ?? 10) * 1000;
     this._rotateTimer = setInterval(() => {
       this._slotIdx = (this._slotIdx + 1) % this._slots.length;
       if (this._hass && this._config) this._render();
