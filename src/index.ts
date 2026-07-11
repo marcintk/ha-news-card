@@ -8,12 +8,11 @@ const CARD_STYLES = `
   :host { display: block; }
 
   ha-card {
+    --rss-row-height: 67px;
+    --poly-row-height: 90px;
     padding: 2px;
     box-sizing: border-box;
-    font-family: var(--paper-font-body1_-_font-family, sans-serif);
     color: var(--secondary-text-color, darkgray);
-    font-size: 18px;
-    line-height: 1.2;
     overflow: hidden;
   }
 
@@ -30,34 +29,31 @@ const CARD_STYLES = `
     table-layout: fixed;
   }
 
-  .img-cell {
+  .rss-img-cell {
     padding: 4px;
     vertical-align: top;
   }
 
-  .thumb {
+  .rss-thumb {
     width: 75px;
-    height: 67px;
+    height: var(--rss-row-height);
     border-radius: 4px;
     object-fit: cover;
     display: block;
   }
 
-  .text-cell {
+  .rss-text-cell {
     padding: 4px;
     vertical-align: top;
-    word-wrap: break-word;
-    white-space: normal;
-    text-align: left;
     line-height: 1.3;
   }
 
-  .text-inner {
-    max-height: 67px;
+  .rss-text-inner {
+    max-height: var(--rss-row-height);
     overflow: hidden;
   }
 
-  .time {
+  .rss-time {
     font-size: 14px;
     color: var(--secondary-text-color, darkgray);
   }
@@ -66,20 +62,20 @@ const CARD_STYLES = `
     table-layout: auto;
   }
 
-  .poly-icon-cell {
+  .poly-img-cell {
     padding: 4px;
     vertical-align: top;
   }
 
-  .poly-icon {
+  .poly-thumb {
     width: 75px;
-    height: 67px;
-    object-fit: contain;
+    height: var(--poly-row-height);
     border-radius: 4px;
+    object-fit: contain;
     display: block;
   }
 
-  .poly-content-cell {
+  .poly-text-cell {
     vertical-align: top;
     padding: 0;
   }

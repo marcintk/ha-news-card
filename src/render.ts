@@ -63,11 +63,11 @@ export function rssHtml(attrs: RssAttributes, limit: number, title: string): Tem
       ${entries.map(
         (item, i) => html`
           <tr style="background-color:${rowBg(i)}">
-            <td class="img-cell">
-              <img src="${item.image ?? item.picture ?? DEFAULT_IMAGE}" class="thumb" @error=${onImgError} />
+            <td class="rss-img-cell">
+              <img src="${item.image ?? item.picture ?? DEFAULT_IMAGE}" class="rss-thumb" @error=${onImgError} />
             </td>
-            <td class="text-cell">
-              <div class="text-inner">${item.title}<span class="time">&nbsp;(${formatTimeMins(item.last_updated ?? 0)})</span></div>
+            <td class="rss-text-cell">
+              <div class="rss-text-inner">${item.title}<span class="rss-time">&nbsp;(${formatTimeMins(item.last_updated ?? 0)})</span></div>
             </td>
           </tr>
         `
@@ -99,10 +99,10 @@ export function polymarketHtml(
         const markets = event.markets.slice(0, marketLimit);
         return html`
           <tr style="background-color:${bg}">
-            <td class="poly-icon-cell">
-              <img src="${event.icon}" class="poly-icon" @error=${onImgError} />
+            <td class="poly-img-cell">
+              <img src="${event.icon}" class="poly-thumb" @error=${onImgError} />
             </td>
-            <td class="poly-content-cell">
+            <td class="poly-text-cell">
               <div class="poly-event-title">${title}</div>
               <div class="poly-data-row">
                 <div class="poly-market-titles">

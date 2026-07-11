@@ -66,7 +66,7 @@ describe("HaNewsCard", () => {
     });
     const shadow = card.shadowRoot!;
     expect(shadow.querySelector(".news-title")?.textContent).toBe("ABC News");
-    expect(shadow.querySelector(".text-cell")?.textContent).toContain("Headline 1");
+    expect(shadow.querySelector(".rss-text-cell")?.textContent).toContain("Headline 1");
   });
 
   it("renders with explicit height applied to ha-card", () => {
@@ -144,7 +144,7 @@ describe("HaNewsCard", () => {
       },
     };
     vi.runAllTimers();
-    expect(card.shadowRoot!.querySelector(".text-cell")?.textContent).toContain("New");
+    expect(card.shadowRoot!.querySelector(".rss-text-cell")?.textContent).toContain("New");
     vi.useRealTimers();
   });
 
@@ -166,7 +166,7 @@ describe("HaNewsCard", () => {
       states: { "sensor.abc_feed": { attributes: { entries: [{ title: "B", last_updated: 2 }] } } },
     };
     vi.runAllTimers();
-    expect(card.shadowRoot!.querySelector(".text-cell")?.textContent).toContain("B");
+    expect(card.shadowRoot!.querySelector(".rss-text-cell")?.textContent).toContain("B");
     vi.useRealTimers();
   });
 
