@@ -1,5 +1,14 @@
-import { html, type TemplateResult } from "lit";
-import type { PolymarketAttributes, RssAttributes } from "./types.js";
+import { html, nothing, type TemplateResult } from "lit";
+import type { PolyMarket, PolymarketAttributes, RssAttributes } from "./types.js";
+
+const TIME_INTERVALS: { limit: number; name: string }[] = [
+  { limit: 31536000, name: "year" },
+  { limit: 2592000, name: "month" },
+  { limit: 86400, name: "day" },
+  { limit: 3600, name: "hr" },
+  { limit: 60, name: "min" },
+  { limit: 1, name: "sec" },
+];
 
 const DEFAULT_IMAGE = "https://brands.home-assistant.io/homeassistant/icon.png";
 
@@ -18,15 +27,7 @@ function formatTimeMins(mins: number): string {
 function formatRelativeTime(datetime: string): string {
   const seconds = (Date.now() - new Date(datetime).getTime()) / 1000;
   const abs = Math.abs(seconds);
-  const intervals: { limit: number; name: string }[] = [
-    { limit: 31536000, name: "year" },
-    { limit: 2592000, name: "month" },
-    { limit: 86400, name: "day" },
-    { limit: 3600, name: "hr" },
-    { limit: 60, name: "min" },
-    { limit: 1, name: "sec" },
-  ];
-  for (const iv of intervals) {
+  for (const iv of TIME_INTERVALS) {
     if (abs >= iv.limit) {
       const count = Math.floor(abs / iv.limit);
       return seconds < 0
@@ -96,7 +97,8 @@ export function polymarketHtml(
         const bg = rowBg(i);
         const title =
           event.title.length > titleLength ? `${event.title.slice(0, titleLength)}…` : event.title;
-        const markets = event.markets.slice(0, marketLimit);
+        const markets = event.markets.slice(0, marketLimit) as (PolyMarket | null)[];
+        while (markets.length < marketLimit) markets.push(null);
         return html`
           <tr style="background-color:${bg}">
             <td class="poly-img-cell">
@@ -106,16 +108,16 @@ export function polymarketHtml(
               <div class="poly-event-title">${title}</div>
               <div class="poly-data-row">
                 <div class="poly-market-titles">
-                  ${markets.map((m, mi) => html`<span>${mi + 1}. ${m.title}</span>`)}
+                  ${markets.map((m, mi) => html`<span>${m ? `${mi + 1}. ${m.title}` : nothing}</span>`)}
                 </div>
                 <div class="poly-num">
-                  ${markets.map((m) => html`<span>${humanNumber(m.liquidity)}</span>`)}
+                  ${markets.map((m) => html`<span>${m ? humanNumber(m.liquidity) : nothing}</span>`)}
                 </div>
                 <div class="poly-num">
-                  ${markets.map((m) => html`<span>${humanNumber(m.volume24hr)}</span>`)}
+                  ${markets.map((m) => html`<span>${m ? humanNumber(m.volume24hr) : nothing}</span>`)}
                 </div>
                 <div class="poly-num">
-                  ${markets.map((m) => html`<span>${Number.parseFloat(String(m.winPrice)).toFixed(1)}%</span>`)}
+                  ${markets.map((m) => html`<span>${m ? `${Number.parseFloat(String(m.winPrice)).toFixed(1)}%` : nothing}</span>`)}
                 </div>
               </div>
               <div class="poly-footer">

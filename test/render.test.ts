@@ -178,6 +178,12 @@ describe("polymarketHtml", () => {
     expect(el.querySelectorAll(".poly-market-titles span")).toHaveLength(1);
   });
 
+  it("pads to market limit when fewer markets exist", () => {
+    const el = doc(polymarketHtml(attrs, 5, 3)); // 2 real markets, limit 3
+    expect(el.querySelectorAll(".poly-market-titles span")).toHaveLength(3);
+    expect(el.querySelectorAll(".poly-num")[0].querySelectorAll("span")).toHaveLength(3);
+  });
+
   it("shows win price", () => {
     const el = doc(polymarketHtml(attrs, 5, 2));
     const prices = el.querySelectorAll(".poly-num span");
