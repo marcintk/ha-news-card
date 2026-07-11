@@ -79,7 +79,8 @@ export function rssHtml(attrs: RssAttributes, limit: number, title: string): Tem
 export function polymarketHtml(
   attrs: PolymarketAttributes,
   eventLimit: number,
-  marketLimit: number
+  marketLimit: number,
+  titleLength = 55
 ): TemplateResult {
   const events = (attrs.events ?? []).slice(0, eventLimit);
   const scene = attrs.scene ?? "unknown";
@@ -93,7 +94,8 @@ export function polymarketHtml(
       </colgroup>
       ${events.map((event, i) => {
         const bg = rowBg(i);
-        const title = event.title.length > 55 ? `${event.title.slice(0, 55)}…` : event.title;
+        const title =
+          event.title.length > titleLength ? `${event.title.slice(0, titleLength)}…` : event.title;
         const markets = event.markets.slice(0, marketLimit);
         return html`
           <tr style="background-color:${bg}">

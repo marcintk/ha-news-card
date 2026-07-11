@@ -132,7 +132,13 @@ const CARD_STYLES = `
 const _STYLE_BLOCK = html`<style>${CARD_STYLES}</style>`;
 
 type RssSlot = { plugin: "rss"; entity: string; title: string; limit: number };
-type PolySlot = { plugin: "polymarket"; entity: string; event_limit: number; market_limit: number };
+type PolySlot = {
+  plugin: "polymarket";
+  entity: string;
+  event_limit: number;
+  market_limit: number;
+  title_length: number;
+};
 type Slot = RssSlot | PolySlot;
 
 function buildSlots(config: CardConfig): Slot[] {
@@ -153,6 +159,7 @@ function buildSlots(config: CardConfig): Slot[] {
         entity: source.entity,
         event_limit: source.event_limit ?? 5,
         market_limit: source.market_limit ?? 3,
+        title_length: source.title_length ?? 55,
       });
     }
   }
@@ -269,7 +276,12 @@ class HaNewsCard extends HTMLElement {
       const content =
         slot.plugin === "rss"
           ? rssHtml(attrs as RssAttributes, slot.limit, slot.title)
-          : polymarketHtml(attrs as PolymarketAttributes, slot.event_limit, slot.market_limit);
+          : polymarketHtml(
+              attrs as PolymarketAttributes,
+              slot.event_limit,
+              slot.market_limit,
+              slot.title_length
+            );
 
       render(
         html`${_STYLE_BLOCK}<ha-card style=${haCardStyle ?? nothing}>${content}</ha-card>`,
