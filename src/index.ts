@@ -159,7 +159,7 @@ function buildSlots(config: CardConfig): Slot[] {
         entity: source.entity,
         event_limit: source.event_limit ?? 5,
         market_limit: source.market_limit ?? 3,
-        title_length: source.title_length ?? 55,
+        title_length: source.title_length ?? 50,
       });
     }
   }
