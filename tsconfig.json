@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "ha-card-shared/tsconfig.base.json",
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "noEmit": true
+  },
+  "include": ["src/**/*.ts", "src/**/*.d.ts"]
+}
