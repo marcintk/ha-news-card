@@ -1,11 +1,26 @@
-export type Plugin = "rss" | "polymarket";
-
-export interface CardConfig {
-  plugin: Plugin;
+export interface RssEntityRef {
   entity: string;
   title?: string;
+}
+
+export interface RssSource {
+  plugin: "rss";
+  entities: RssEntityRef[];
   limit?: number;
+}
+
+export interface PolymarketSource {
+  plugin: "polymarket";
+  entity: string;
+  event_limit?: number;
   market_limit?: number;
+}
+
+export type Source = RssSource | PolymarketSource;
+
+export interface CardConfig {
+  sources: Source[];
+  rotate_interval?: number;
   height?: string;
 }
 

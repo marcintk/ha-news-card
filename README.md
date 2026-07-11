@@ -9,8 +9,11 @@
 [![CI](https://github.com/marcintk/ha-news-card/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/marcintk/ha-news-card/actions/workflows/build-and-test.yml)
 
 Home Assistant custom Lovelace card displaying news from RSS feeds and
-[Polymarket](https://polymarket.com) prediction events — one card, two plugins, a single unified
+[Polymarket](https://polymarket.com) prediction events — one card, multiple sources, a single unified
 layout with a large thumbnail on the left and headline text on the right.
+
+The card rotates through all configured entities on a timer, cycling from RSS feed to RSS feed to
+Polymarket and back.
 
 ## Requirements
 
@@ -20,9 +23,11 @@ The card reads data from Home Assistant sensor entities. You need at least one o
   array (e.g. the [feedparser](https://github.com/custom-components/feedparser) HACS integration).
   Each entry should expose `title`, `last_updated` (minutes since published), and optionally `image`
   / `picture`.
-- **Polymarket plugin** — a sensor whose attributes contain a `events` array of Polymarket
+- **Polymarket plugin** — a sensor whose attributes contain an `events` array of Polymarket
   prediction markets (e.g. a custom REST/template sensor scraping the Polymarket API). Each event
-  should expose `title`, `icon`, `liquidity`, `volume24hr`, `endsAt`, and a `markets` array.
+  should expose `title`, `icon`, `liquidity`, `volume24hr`, `endsAt`, and a `markets` array. The
+  sensor is expected to rotate its own data (via `attributes.scene`); the card simply displays
+  whatever the entity currently holds.
 
 ## Installation
 
@@ -49,38 +54,84 @@ The card reads data from Home Assistant sensor entities. You need at least one o
 
 Add a **Manual card** to your dashboard and paste one of the examples below.
 
-### RSS feed
+### RSS feeds (rotating between multiple entities)
 
 ```yaml
 type: custom:ha-news-card
-plugin: rss
-entity: sensor.abc_feed
-title: ABC News
-limit: 7
+rotate_interval: 10       # seconds per entity
 height: 560px
+sources:
+  - plugin: rss
+    entities:
+      - entity: sensor.abc_feed
+        title: ABC News
+      - entity: sensor.wsj_feed
+        title: Wall Street Journal
+      - entity: sensor.bbc_feed
+        title: BBC News
+    limit: 7
 ```
 
 ### Polymarket events
 
 ```yaml
 type: custom:ha-news-card
-plugin: polymarket
-entity: sensor.polymarket_news
-limit: 5
-market_limit: 3
 height: 400px
+sources:
+  - plugin: polymarket
+    entity: sensor.polymarket_news
+    event_limit: 5
+    market_limit: 3
 ```
 
-### Options
+### Combined — RSS and Polymarket on one card
 
-| Option         | Type   | Default      | Description                                                   |
-| -------------- | ------ | ------------ | ------------------------------------------------------------- |
-| `plugin`       | string | **required** | Data source: `rss` or `polymarket`                            |
-| `entity`       | string | **required** | Home Assistant entity ID to read                              |
-| `title`        | string | entity ID    | Header label shown above the card (RSS only)                  |
-| `limit`        | number | `5`          | Maximum number of entries / events to display                 |
-| `market_limit` | number | `3`          | Max markets shown per Polymarket event (polymarket only)      |
-| `height`       | string | auto         | Card height as a CSS value, e.g. `400px`; omit to fit content |
+```yaml
+type: custom:ha-news-card
+rotate_interval: 10
+height: 560px
+sources:
+  - plugin: rss
+    entities:
+      - entity: sensor.abc_feed
+        title: ABC News
+      - entity: sensor.bbc_feed
+        title: BBC News
+    limit: 7
+  - plugin: polymarket
+    entity: sensor.polymarket_news
+    event_limit: 5
+    market_limit: 3
+```
+
+The card rotates through each entity in order: ABC News → BBC News → Polymarket → ABC News → …
+
+### Top-level options
+
+| Option            | Type   | Default | Description                                                    |
+| ----------------- | ------ | ------- | -------------------------------------------------------------- |
+| `sources`         | list   | **required** | One or more plugin source blocks (see below)              |
+| `rotate_interval` | number | `10`    | Seconds to display each entity before advancing to the next    |
+| `height`          | string | auto    | Card height as a CSS value, e.g. `560px`; omit to fit content  |
+
+### RSS source options
+
+Defined under `sources` with `plugin: rss`.
+
+| Option     | Type   | Default      | Description                                         |
+| ---------- | ------ | ------------ | --------------------------------------------------- |
+| `entities` | list   | **required** | List of `{ entity, title? }` objects to rotate through |
+| `limit`    | number | `5`          | Maximum number of entries to display per entity     |
+
+### Polymarket source options
+
+Defined under `sources` with `plugin: polymarket`.
+
+| Option         | Type   | Default      | Description                                              |
+| -------------- | ------ | ------------ | -------------------------------------------------------- |
+| `entity`       | string | **required** | Home Assistant entity ID to read                         |
+| `event_limit`  | number | `5`          | Maximum number of events to display                      |
+| `market_limit` | number | `3`          | Maximum number of markets shown per event                |
 
 ## Plugins
 
@@ -104,7 +155,8 @@ Reads `attributes.events` from the entity and renders each event as a three-row 
 | 3   | Total liquidity & volume · Time until market closes                |
 
 Numbers are abbreviated: `1.2K`, `3.4M`, `5.6G`. The header label is derived automatically from
-`attributes.scene` as `PolyMarket (#<scene>)`.
+`attributes.scene` as `PolyMarket (#<scene>)`. The Polymarket sensor is expected to rotate its own
+data externally; the card re-renders whenever the entity state changes.
 
 ## Development
 

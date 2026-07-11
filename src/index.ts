@@ -106,12 +106,33 @@ const CARD_STYLES = `
 
 const _STYLE_BLOCK = html`<style>${CARD_STYLES}</style>`;
 
+type RssSlot = { plugin: "rss"; entity: string; title: string; limit: number };
+type PolySlot = { plugin: "polymarket"; entity: string; event_limit: number; market_limit: number };
+type Slot = RssSlot | PolySlot;
+
+function buildSlots(config: CardConfig): Slot[] {
+  const slots: Slot[] = [];
+  for (const source of config.sources) {
+    if (source.plugin === "rss") {
+      for (const ref of source.entities) {
+        slots.push({ plugin: "rss", entity: ref.entity, title: ref.title ?? ref.entity, limit: source.limit ?? 5 });
+      }
+    } else if (source.plugin === "polymarket") {
+      slots.push({ plugin: "polymarket", entity: source.entity, event_limit: source.event_limit ?? 5, market_limit: source.market_limit ?? 3 });
+    }
+  }
+  return slots;
+}
+
 class HaNewsCard extends HTMLElement {
   private readonly _root: ShadowRoot;
   private _config: CardConfig | null;
   private _hass: Hass | null;
   private _renderTimer: ReturnType<typeof setTimeout> | null;
+  private _rotateTimer: ReturnType<typeof setInterval> | null;
   private _subscription: SubscriptionManager;
+  private _slots: Slot[];
+  private _slotIdx: number;
 
   constructor() {
     super();
@@ -119,13 +140,20 @@ class HaNewsCard extends HTMLElement {
     this._config = null;
     this._hass = null;
     this._renderTimer = null;
+    this._rotateTimer = null;
     this._subscription = new SubscriptionManager();
+    this._slots = [];
+    this._slotIdx = 0;
   }
 
   setConfig(config: CardConfig): void {
-    if (!config.entity) throw new Error("entity is required");
-    if (!config.plugin) throw new Error("plugin is required");
+    if (!config.sources?.length) throw new Error("sources is required");
+    const slots = buildSlots(config);
+    if (!slots.length) throw new Error("sources must contain at least one entity");
     this._config = config;
+    this._slots = slots;
+    this._slotIdx = 0;
+    this._startRotation();
     this._subscription.clear();
     if (this._hass) {
       this._render();
@@ -146,10 +174,21 @@ class HaNewsCard extends HTMLElement {
       return;
     }
 
-    const id = this._config?.entity;
-    if (id && hass.states[id] !== prev?.states[id] && this._config) {
-      this._scheduleRender();
+    const changed = this._slots.some((s) => hass.states[s.entity] !== prev?.states[s.entity]);
+    if (changed) this._scheduleRender();
+  }
+
+  private _startRotation(): void {
+    if (this._rotateTimer) {
+      clearInterval(this._rotateTimer);
+      this._rotateTimer = null;
     }
+    if (this._slots.length <= 1) return;
+    const interval = (this._config?.rotate_interval ?? 10) * 1000;
+    this._rotateTimer = setInterval(() => {
+      this._slotIdx = (this._slotIdx + 1) % this._slots.length;
+      if (this._hass && this._config) this._render();
+    }, interval);
   }
 
   private _scheduleRender(): void {
@@ -162,7 +201,7 @@ class HaNewsCard extends HTMLElement {
 
   private _subscribe(): void {
     if (!this._config || !this._hass?.connection) return;
-    const ids = new Set([this._config.entity]);
+    const ids = new Set(this._slots.map((s) => s.entity));
     this._subscription.subscribe(this._hass.connection, ids, () => this._scheduleRender());
   }
 
@@ -171,24 +210,25 @@ class HaNewsCard extends HTMLElement {
       clearTimeout(this._renderTimer);
       this._renderTimer = null;
     }
+    if (this._rotateTimer) {
+      clearInterval(this._rotateTimer);
+      this._rotateTimer = null;
+    }
     this._subscription.clear();
   }
 
   private _render(): void {
     try {
       if (!this._config || !this._hass) throw new Error("render called before config/hass set");
-      const { entity, plugin, limit, market_limit, title, height } = this._config;
-      const attrs = this._hass.states[entity]?.attributes ?? {};
-      const haCardStyle = height
-        ? `height:${height};min-height:${height};max-height:${height};`
-        : undefined;
+      const slot = this._slots[this._slotIdx];
+      const attrs = this._hass.states[slot.entity]?.attributes ?? {};
+      const { height } = this._config;
+      const haCardStyle = height ? `height:${height};min-height:${height};max-height:${height};` : undefined;
 
       const content =
-        plugin === "rss"
-          ? rssHtml(attrs as RssAttributes, limit ?? 5, title ?? entity)
-          : plugin === "polymarket"
-            ? polymarketHtml(attrs as PolymarketAttributes, limit ?? 5, market_limit ?? 3)
-            : html`<div style="padding:8px;color:var(--error-color,red);">Unknown plugin: ${plugin}</div>`;
+        slot.plugin === "rss"
+          ? rssHtml(attrs as RssAttributes, slot.limit, slot.title)
+          : polymarketHtml(attrs as PolymarketAttributes, slot.event_limit, slot.market_limit);
 
       render(
         html`${_STYLE_BLOCK}<ha-card style=${haCardStyle ?? nothing}>${content}</ha-card>`,
@@ -217,15 +257,17 @@ class HaNewsCard extends HTMLElement {
       const px = Number.parseInt(String(this._config.height), 10);
       if (Number.isFinite(px)) return Math.ceil(px / 50);
     }
-    return Math.max(1, Math.ceil(((this._config?.limit ?? 5) * 72) / 50));
+    const slot = this._slots[this._slotIdx];
+    const limit = slot?.plugin === "rss" ? slot.limit : (slot?.event_limit ?? 5);
+    return Math.max(1, Math.ceil((limit * 72) / 50));
   }
 
   static getStubConfig(): CardConfig {
     return {
-      plugin: "rss",
-      entity: "sensor.abc_feed",
-      limit: 5,
-      title: "ABC News",
+      sources: [
+        { plugin: "rss", entities: [{ entity: "sensor.abc_feed", title: "ABC News" }], limit: 5 },
+      ],
+      rotate_interval: 10,
     };
   }
 }
