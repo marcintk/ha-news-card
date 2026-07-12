@@ -1,15 +1,6 @@
 import { html, nothing, type TemplateResult } from "lit";
 import type { PolyMarket, PolymarketAttributes, RssAttributes } from "./types.js";
 
-const TIME_INTERVALS: { limit: number; name: string }[] = [
-  { limit: 31536000, name: "year" },
-  { limit: 2592000, name: "month" },
-  { limit: 86400, name: "day" },
-  { limit: 3600, name: "hr" },
-  { limit: 60, name: "min" },
-  { limit: 1, name: "sec" },
-];
-
 const DEFAULT_IMAGE = "https://brands.home-assistant.io/homeassistant/icon.png";
 
 function onImgError(e: Event): void {
@@ -27,14 +18,14 @@ function formatTimeMins(mins: number): string {
 function formatRelativeTime(datetime: string): string {
   const seconds = (Date.now() - new Date(datetime).getTime()) / 1000;
   const abs = Math.abs(seconds);
-  for (const iv of TIME_INTERVALS) {
-    if (abs >= iv.limit) {
-      const count = Math.floor(abs / iv.limit);
-      return seconds < 0
-        ? `in ${count} ${iv.name}${count === 1 ? "" : "s"}`
-        : `${count} ${iv.name}${count === 1 ? "" : "s"} ago`;
-    }
-  }
+  const fmt = (n: number, u: string) =>
+    seconds < 0 ? `in ${n} ${u}${n === 1 ? "" : "s"}` : `${n} ${u}${n === 1 ? "" : "s"} ago`;
+  if (abs >= 31536000) return fmt(Math.floor(abs / 31536000), "year");
+  if (abs >= 2592000) return fmt(Math.floor(abs / 2592000), "month");
+  if (abs >= 86400) return fmt(Math.floor(abs / 86400), "day");
+  if (abs >= 3600) return fmt(Math.floor(abs / 3600), "hr");
+  if (abs >= 60) return fmt(Math.floor(abs / 60), "min");
+  if (abs >= 1) return fmt(Math.floor(abs), "sec");
   return `${Math.floor(abs)} secs ago`;
 }
 
@@ -97,8 +88,7 @@ export function polymarketHtml(
         const bg = rowBg(i);
         const title =
           event.title.length > titleLength ? `${event.title.slice(0, titleLength)}…` : event.title;
-        const markets = event.markets.slice(0, marketLimit) as (PolyMarket | null)[];
-        while (markets.length < marketLimit) markets.push(null);
+        const markets = Array.from({ length: marketLimit }, (_, i) => event.markets[i] ?? null);
         return html`
           <tr style="background-color:${bg}">
             <td class="poly-img-cell">
@@ -117,7 +107,7 @@ export function polymarketHtml(
                   ${markets.map((m) => html`<span>${m ? humanNumber(m.volume24hr) : nothing}</span>`)}
                 </div>
                 <div class="poly-num">
-                  ${markets.map((m) => html`<span>${m ? `${Number.parseFloat(String(m.winPrice)).toFixed(1)}%` : nothing}</span>`)}
+                  ${markets.map((m) => html`<span>${m ? `${m.winPrice.toFixed(1)}%` : nothing}</span>`)}
                 </div>
               </div>
               <div class="poly-footer">

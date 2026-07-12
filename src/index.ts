@@ -253,7 +253,7 @@ class HaNewsCard extends HTMLElement {
 
   private _render(): void {
     try {
-      if (!this._config || !this._hass) throw new Error("render called before config/hass set");
+      if (!this._config || !this._hass) return;
       const slot = this._slots[this._slotIdx];
       const attrs = this._hass.states[slot.entity]?.attributes ?? {};
       const { height, title_color } = this._config;

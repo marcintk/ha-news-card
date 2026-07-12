@@ -240,11 +240,11 @@ describe("HaNewsCard", () => {
     expect(card.shadowRoot!.textContent).toContain("ha-news-card error");
   });
 
-  it("shows error when _render called without config", () => {
+  it("does nothing when _render called without config", () => {
     const card = makeCard();
     (card as any)._hass = { states: {} };
     (card as any)._render();
-    expect(card.shadowRoot!.textContent).toContain("ha-news-card error");
+    expect(card.shadowRoot!.textContent).toBe("");
   });
 
   it("getStubConfig returns sources-based config", () => {
