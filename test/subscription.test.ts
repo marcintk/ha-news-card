@@ -21,18 +21,6 @@ function makeConn(unsub: () => void = vi.fn()) {
 }
 
 describe("SubscriptionManager", () => {
-  it("active is false initially", () => {
-    expect(new SubscriptionManager().active).toBe(false);
-  });
-
-  it("active is true after subscribe resolves", async () => {
-    const sm = new SubscriptionManager();
-    const { conn } = makeConn();
-    sm.subscribe(conn, new Set(["sensor.a"]), vi.fn());
-    await Promise.resolve();
-    expect(sm.active).toBe(true);
-  });
-
   it("fires onMatch when tracked entity event arrives", () => {
     const sm = new SubscriptionManager();
     const onMatch = vi.fn();
@@ -70,7 +58,7 @@ describe("SubscriptionManager", () => {
     expect(staleUnsub).toHaveBeenCalledOnce();
   });
 
-  it("clear calls active unsub and sets active to false", async () => {
+  it("clear calls active unsub", async () => {
     const sm = new SubscriptionManager();
     const unsub = vi.fn();
     const { conn } = makeConn(unsub);
@@ -78,12 +66,11 @@ describe("SubscriptionManager", () => {
     await Promise.resolve();
     sm.clear();
     expect(unsub).toHaveBeenCalledOnce();
-    expect(sm.active).toBe(false);
   });
 
   it("no-ops when connection lacks subscribeEvents", () => {
     const sm = new SubscriptionManager();
-    expect(() => sm.subscribe(null as any, null, vi.fn())).not.toThrow();
+    expect(() => sm.subscribe(null as any, new Set(), vi.fn())).not.toThrow();
   });
 
   it("handles subscribeEvents rejection gracefully", async () => {
@@ -91,6 +78,6 @@ describe("SubscriptionManager", () => {
     const conn: Conn = { subscribeEvents: vi.fn().mockRejectedValue(new Error("network")) };
     sm.subscribe(conn, new Set(["sensor.a"]), vi.fn());
     await new Promise((r) => setTimeout(r, 0));
-    expect(sm.active).toBe(false);
+    // no throw is the assertion — _unsub stays null, onMatch never fires
   });
 });

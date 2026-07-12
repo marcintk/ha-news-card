@@ -9,20 +9,12 @@ export class SubscriptionManager {
     this._unsub = null;
   }
 
-  get active(): boolean {
-    return this._unsub !== null;
-  }
-
-  subscribe(
-    connection: Hass["connection"],
-    trackedIds: Set<string> | null,
-    onMatch: () => void
-  ): void {
+  subscribe(connection: Hass["connection"], trackedIds: Set<string>, onMatch: () => void): void {
     if (!connection?.subscribeEvents) return;
     const gen = this._gen;
     connection
       .subscribeEvents((event) => {
-        if (this._gen === gen && trackedIds?.has(event.data.entity_id)) {
+        if (this._gen === gen && trackedIds.has(event.data.entity_id)) {
           onMatch();
         }
       }, "state_changed")

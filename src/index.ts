@@ -123,8 +123,6 @@ const CARD_STYLES = `
   }
 `;
 
-const _STYLE_BLOCK = html`<style>${CARD_STYLES}</style>`;
-
 type RssSlot = { plugin: "rss"; entity: string; title: string; limit: number };
 type PolySlot = {
   plugin: "polymarket";
@@ -255,7 +253,7 @@ class HaNewsCard extends HTMLElement {
 
   private _render(): void {
     try {
-      if (!this._config || !this._hass) throw new Error("render called before config/hass set");
+      if (!this._config || !this._hass) return;
       const slot = this._slots[this._slotIdx];
       const attrs = this._hass.states[slot.entity]?.attributes ?? {};
       const { height, title_color } = this._config;
@@ -278,7 +276,7 @@ class HaNewsCard extends HTMLElement {
             );
 
       render(
-        html`${_STYLE_BLOCK}<ha-card style=${haCardStyle ?? nothing}>${content}</ha-card>`,
+        html`<style>${CARD_STYLES}</style><ha-card style=${haCardStyle ?? nothing}>${content}</ha-card>`,
         this._root
       );
     } catch (e) {

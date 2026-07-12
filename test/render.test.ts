@@ -178,6 +178,12 @@ describe("polymarketHtml", () => {
     expect(el.querySelectorAll(".poly-market-titles span")).toHaveLength(1);
   });
 
+  it("pads to market limit when fewer markets exist", () => {
+    const el = doc(polymarketHtml(attrs, 5, 3)); // 2 real markets, limit 3
+    expect(el.querySelectorAll(".poly-market-titles span")).toHaveLength(3);
+    expect(el.querySelectorAll(".poly-num")[0].querySelectorAll("span")).toHaveLength(3);
+  });
+
   it("shows win price", () => {
     const el = doc(polymarketHtml(attrs, 5, 2));
     const prices = el.querySelectorAll(".poly-num span");
@@ -224,5 +230,45 @@ describe("polymarketHtml", () => {
       )
     );
     expect(el.querySelector(".poly-ends")?.textContent).toContain("0 secs ago");
+  });
+
+  it("shows seconds ago", () => {
+    const past = new Date(Date.now() - 30 * 1000).toISOString();
+    const el = doc(
+      polymarketHtml({ ...attrs, events: [{ ...attrs.events[0], endsAt: past }] }, 1, 0)
+    );
+    expect(el.querySelector(".poly-ends")?.textContent).toContain("30 secs ago");
+  });
+
+  it("shows minutes ago", () => {
+    const past = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+    const el = doc(
+      polymarketHtml({ ...attrs, events: [{ ...attrs.events[0], endsAt: past }] }, 1, 0)
+    );
+    expect(el.querySelector(".poly-ends")?.textContent).toContain("5 mins ago");
+  });
+
+  it("shows hours ago", () => {
+    const past = new Date(Date.now() - 3 * 3600 * 1000).toISOString();
+    const el = doc(
+      polymarketHtml({ ...attrs, events: [{ ...attrs.events[0], endsAt: past }] }, 1, 0)
+    );
+    expect(el.querySelector(".poly-ends")?.textContent).toContain("3 hrs ago");
+  });
+
+  it("shows months ago", () => {
+    const past = new Date(Date.now() - 2 * 2592000 * 1000).toISOString();
+    const el = doc(
+      polymarketHtml({ ...attrs, events: [{ ...attrs.events[0], endsAt: past }] }, 1, 0)
+    );
+    expect(el.querySelector(".poly-ends")?.textContent).toContain("months ago");
+  });
+
+  it("shows years ago", () => {
+    const past = new Date(Date.now() - 2 * 31536000 * 1000).toISOString();
+    const el = doc(
+      polymarketHtml({ ...attrs, events: [{ ...attrs.events[0], endsAt: past }] }, 1, 0)
+    );
+    expect(el.querySelector(".poly-ends")?.textContent).toContain("years ago");
   });
 });
