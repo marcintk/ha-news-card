@@ -333,7 +333,7 @@ describe("HaNewsCard", () => {
           { entity: "sensor.wsj_feed", title: "WSJ" },
         ],
       },
-      // no rotate_interval — defaults to 10s
+      // no rotate_interval — defaults to 60s
     });
     card.hass = {
       connection: conn,
@@ -342,7 +342,7 @@ describe("HaNewsCard", () => {
         "sensor.wsj_feed": { attributes: { entries: [] } },
       },
     };
-    vi.advanceTimersByTime(10000);
+    vi.advanceTimersByTime(60000);
     expect(card.shadowRoot?.querySelector(".news-title")?.textContent).toBe("WSJ");
     vi.useRealTimers();
   });

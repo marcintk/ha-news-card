@@ -96,7 +96,7 @@ source:
 | Option            | Type   | Default      | Description                                                                    |
 | ----------------- | ------ | ------------ | ------------------------------------------------------------------------------ |
 | `source`          | object | **required** | Plugin source block (see below); one plugin per card                           |
-| `rotate_interval` | number | `10`         | Seconds to display each RSS entity before advancing (RSS only)                 |
+| `rotate_interval` | number | `60`         | Seconds to display each RSS entity before advancing (RSS only)                 |
 | `height`          | string | auto         | Card height as a CSS value, e.g. `560px`; omit to fit content                  |
 | `title_color`     | string | `#2196F3`    | Feed title colour; any CSS value, e.g. `red`, `#ff0000`, `var(--accent-color)` |
 
