@@ -19,7 +19,7 @@ export interface PolymarketSource {
 
 export interface CardConfig {
   source: RssSource | PolymarketSource;
-  rotate_interval?: number;
+  rotate_every?: number;
   height?: string;
   title_color?: string;
 }
