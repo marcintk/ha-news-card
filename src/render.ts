@@ -37,7 +37,9 @@ export function humanNumber(n: number): string {
 }
 
 function rowBg(i: number): string {
-  return i % 2 ? "var(--primary-background-color)" : "var(--secondary-background-color)";
+  return i % 2
+    ? "var(--secondary-background-color)"
+    : "var(--ha-card-background, var(--card-background-color, transparent))";
 }
 
 export function rssHtml(attrs: RssAttributes, limit: number, title: string): TemplateResult {

@@ -109,6 +109,19 @@ describe("rssHtml", () => {
     expect(img.src).toContain("brands.home-assistant.io/homeassistant/icon.png");
   });
 
+  it("even rows use card background color", () => {
+    const el = doc(rssHtml(attrs, 3, "Feed"));
+    const rows = el.querySelectorAll<HTMLTableRowElement>("tr");
+    expect(rows[0]?.style.backgroundColor).toContain("--ha-card-background");
+    expect(rows[2]?.style.backgroundColor).toContain("--ha-card-background");
+  });
+
+  it("odd rows use secondary background color", () => {
+    const el = doc(rssHtml(attrs, 3, "Feed"));
+    const rows = el.querySelectorAll<HTMLTableRowElement>("tr");
+    expect(rows[1]?.style.backgroundColor).toContain("--secondary-background-color");
+  });
+
   it("does not loop when fallback image itself errors", () => {
     const el = doc(rssHtml({ entries: [{ title: "X" }] }, 1, "Feed"));
     const img = el.querySelector<HTMLImageElement>(".rss-thumb")!;

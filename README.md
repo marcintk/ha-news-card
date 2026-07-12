@@ -126,8 +126,8 @@ Set `source.plugin: polymarket`.
 
 Reads `attributes.entries` from the entity, sorts by `last_updated` ascending (most recent first),
 and renders each entry as a row with a **75 × 67 px thumbnail** on the left and the headline plus
-relative age on the right. Alternating row backgrounds follow the HA theme
-(`--primary-background-color` / `--secondary-background-color`).
+relative age on the right. Alternating row backgrounds follow the HA theme: even rows use
+`--ha-card-background` (blends with the card surface), odd rows use `--secondary-background-color`.
 
 Falls back to the Home Assistant logo (`https://brands.home-assistant.io/homeassistant/icon.png`)
 when an entry has no image or the image URL fails to load.
