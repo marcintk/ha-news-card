@@ -9,11 +9,11 @@
 [![CI](https://github.com/marcintk/ha-news-card/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/marcintk/ha-news-card/actions/workflows/build-and-test.yml)
 
 Home Assistant custom Lovelace card displaying news from RSS feeds and
-[Polymarket](https://polymarket.com) prediction events — one card, multiple sources, a single
-unified layout with a large thumbnail on the left and headline text on the right.
+[Polymarket](https://polymarket.com) prediction events — one card, one plugin, a single unified
+layout with a large thumbnail on the left and headline text on the right.
 
-The card rotates through all configured entities on a timer, cycling from RSS feed to RSS feed to
-Polymarket and back.
+Each card uses a single plugin (`rss` or `polymarket`). An RSS card rotates through its configured
+entities on a timer; a Polymarket card re-renders whenever the entity state changes.
 
 <table>
   <tr>
@@ -67,16 +67,16 @@ Add a **Manual card** to your dashboard and paste one of the examples below.
 type: custom:ha-news-card
 rotate_interval: 10 # seconds per entity
 height: 560px
-sources:
-  - plugin: rss
-    entities:
-      - entity: sensor.abc_feed
-        title: ABC News
-      - entity: sensor.wsj_feed
-        title: Wall Street Journal
-      - entity: sensor.bbc_feed
-        title: BBC News
-    limit: 7
+source:
+  plugin: rss
+  entities:
+    - entity: sensor.abc_feed
+      title: ABC News
+    - entity: sensor.wsj_feed
+      title: Wall Street Journal
+    - entity: sensor.bbc_feed
+      title: BBC News
+  limit: 7
 ```
 
 ### Polymarket events
@@ -84,47 +84,25 @@ sources:
 ```yaml
 type: custom:ha-news-card
 height: 400px
-sources:
-  - plugin: polymarket
-    entity: sensor.polymarket_news
-    event_limit: 5
-    market_limit: 3
+source:
+  plugin: polymarket
+  entity: sensor.polymarket_news
+  event_limit: 5
+  market_limit: 3
 ```
-
-### Combined — RSS and Polymarket on one card
-
-```yaml
-type: custom:ha-news-card
-rotate_interval: 10
-height: 560px
-sources:
-  - plugin: rss
-    entities:
-      - entity: sensor.abc_feed
-        title: ABC News
-      - entity: sensor.bbc_feed
-        title: BBC News
-    limit: 7
-  - plugin: polymarket
-    entity: sensor.polymarket_news
-    event_limit: 5
-    market_limit: 3
-```
-
-The card rotates through each entity in order: ABC News → BBC News → Polymarket → ABC News → …
 
 ### Top-level options
 
 | Option            | Type   | Default      | Description                                                                    |
 | ----------------- | ------ | ------------ | ------------------------------------------------------------------------------ |
-| `sources`         | list   | **required** | One or more plugin source blocks (see below)                                   |
-| `rotate_interval` | number | `10`         | Seconds to display each entity before advancing to the next                    |
+| `source`          | object | **required** | Plugin source block (see below); one plugin per card                           |
+| `rotate_interval` | number | `10`         | Seconds to display each RSS entity before advancing (RSS only)                 |
 | `height`          | string | auto         | Card height as a CSS value, e.g. `560px`; omit to fit content                  |
 | `title_color`     | string | `#2196F3`    | Feed title colour; any CSS value, e.g. `red`, `#ff0000`, `var(--accent-color)` |
 
 ### RSS source options
 
-Defined under `sources` with `plugin: rss`.
+Set `source.plugin: rss`.
 
 | Option     | Type   | Default      | Description                                            |
 | ---------- | ------ | ------------ | ------------------------------------------------------ |
@@ -133,7 +111,7 @@ Defined under `sources` with `plugin: rss`.
 
 ### Polymarket source options
 
-Defined under `sources` with `plugin: polymarket`.
+Set `source.plugin: polymarket`.
 
 | Option         | Type   | Default      | Description                                             |
 | -------------- | ------ | ------------ | ------------------------------------------------------- |
