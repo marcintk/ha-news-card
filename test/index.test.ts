@@ -279,7 +279,7 @@ describe("HaNewsCard", () => {
     expect(card.getCardSize()).toBe(8);
   });
 
-  it("rotates to next slot after rotate_interval", () => {
+  it("rotates to next slot after rotate_every", () => {
     vi.useFakeTimers();
     const conn = makeConn();
     const card = makeCard();
@@ -291,7 +291,7 @@ describe("HaNewsCard", () => {
           { entity: "sensor.wsj_feed", title: "WSJ" },
         ],
       },
-      rotate_interval: 10,
+      rotate_every: 10,
     });
     card.hass = {
       connection: conn,
@@ -321,7 +321,7 @@ describe("HaNewsCard", () => {
     vi.useRealTimers();
   });
 
-  it("rotation uses default interval when rotate_interval not set", () => {
+  it("rotation uses default interval when rotate_every not set", () => {
     vi.useFakeTimers();
     const conn = makeConn();
     const card = makeCard();
@@ -333,7 +333,7 @@ describe("HaNewsCard", () => {
           { entity: "sensor.wsj_feed", title: "WSJ" },
         ],
       },
-      // no rotate_interval — defaults to 10s
+      // no rotate_every — defaults to 60s
     });
     card.hass = {
       connection: conn,
@@ -342,7 +342,7 @@ describe("HaNewsCard", () => {
         "sensor.wsj_feed": { attributes: { entries: [] } },
       },
     };
-    vi.advanceTimersByTime(10000);
+    vi.advanceTimersByTime(60000);
     expect(card.shadowRoot?.querySelector(".news-title")?.textContent).toBe("WSJ");
     vi.useRealTimers();
   });
@@ -359,7 +359,7 @@ describe("HaNewsCard", () => {
           { entity: "sensor.wsj_feed", title: "WSJ" },
         ],
       },
-      rotate_interval: 10,
+      rotate_every: 10,
     });
     card.hass = {
       connection: conn,
@@ -396,7 +396,7 @@ describe("HaNewsCard", () => {
           { entity: "sensor.wsj_feed", title: "WSJ" },
         ],
       },
-      rotate_interval: 10,
+      rotate_every: 10,
     });
     card.hass = makeHass("sensor.abc_feed", { entries: [] });
     card.disconnectedCallback();
@@ -417,7 +417,7 @@ describe("HaNewsCard", () => {
           { entity: "sensor.wsj_feed", title: "WSJ" },
         ],
       },
-      rotate_interval: 10,
+      rotate_every: 10,
     };
     card.setConfig(twoFeedConfig);
     card.hass = {
