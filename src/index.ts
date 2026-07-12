@@ -134,28 +134,27 @@ type PolySlot = {
 type Slot = RssSlot | PolySlot;
 
 function buildSlots(config: CardConfig): Slot[] {
-  const slots: Slot[] = [];
-  for (const source of config.sources) {
-    if (source.plugin === "rss") {
-      for (const ref of source.entities) {
-        slots.push({
-          plugin: "rss",
-          entity: ref.entity,
-          title: ref.title ?? ref.entity,
-          limit: source.limit ?? 5,
-        });
-      }
-    } else if (source.plugin === "polymarket") {
-      slots.push({
-        plugin: "polymarket",
+  const { source } = config;
+  if (source.plugin === "rss") {
+    return source.entities.map((ref) => ({
+      plugin: "rss" as const,
+      entity: ref.entity,
+      title: ref.title ?? ref.entity,
+      limit: source.limit ?? 5,
+    }));
+  }
+  if (source.plugin === "polymarket") {
+    return [
+      {
+        plugin: "polymarket" as const,
         entity: source.entity,
         event_limit: source.event_limit ?? 5,
         market_limit: source.market_limit ?? 3,
         title_length: source.title_length ?? 50,
-      });
-    }
+      },
+    ];
   }
-  return slots;
+  return [];
 }
 
 class HaNewsCard extends HTMLElement {
@@ -181,9 +180,9 @@ class HaNewsCard extends HTMLElement {
   }
 
   setConfig(config: CardConfig): void {
-    if (!config.sources?.length) throw new Error("sources is required");
+    if (!config.source) throw new Error("source is required");
     const slots = buildSlots(config);
-    if (!slots.length) throw new Error("sources must contain at least one entity");
+    if (!slots.length) throw new Error("source must contain at least one entity");
     this._config = config;
     this._slots = slots;
     this._slotIdx = 0;
@@ -217,7 +216,7 @@ class HaNewsCard extends HTMLElement {
       clearInterval(this._rotateTimer);
       this._rotateTimer = null;
     }
-    if (this._slots.length <= 1) return;
+    if (this._slots[0]?.plugin !== "rss" || this._slots.length <= 1) return;
     const interval = (config.rotate_interval ?? 10) * 1000;
     this._rotateTimer = setInterval(() => {
       this._slotIdx = (this._slotIdx + 1) % this._slots.length;
@@ -309,9 +308,11 @@ class HaNewsCard extends HTMLElement {
 
   static getStubConfig(): CardConfig {
     return {
-      sources: [
-        { plugin: "rss", entities: [{ entity: "sensor.abc_feed", title: "ABC News" }], limit: 5 },
-      ],
+      source: {
+        plugin: "rss",
+        entities: [{ entity: "sensor.abc_feed", title: "ABC News" }],
+        limit: 5,
+      },
       rotate_interval: 10,
     };
   }

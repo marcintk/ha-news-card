@@ -17,10 +17,8 @@ export interface PolymarketSource {
   title_length?: number;
 }
 
-export type Source = RssSource | PolymarketSource;
-
 export interface CardConfig {
-  sources: Source[];
+  source: RssSource | PolymarketSource;
   rotate_interval?: number;
   height?: string;
   title_color?: string;

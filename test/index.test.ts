@@ -22,11 +22,11 @@ function makeCard() {
 }
 
 const rssConfig = (entity = "sensor.abc_feed", title = "ABC News", limit?: number) => ({
-  sources: [{ plugin: "rss", entities: [{ entity, title }], ...(limit ? { limit } : {}) }],
+  source: { plugin: "rss", entities: [{ entity, title }], ...(limit ? { limit } : {}) },
 });
 
 const polyConfig = (entity = "sensor.polymarket_news", opts: Record<string, unknown> = {}) => ({
-  sources: [{ plugin: "polymarket", entity, ...opts }],
+  source: { plugin: "polymarket", entity, ...opts },
 });
 
 describe("HaNewsCard", () => {
@@ -34,26 +34,21 @@ describe("HaNewsCard", () => {
     expect(customElements.get("ha-news-card")).toBeDefined();
   });
 
-  it("throws without sources", () => {
+  it("throws without source", () => {
     const card = makeCard();
-    expect(() => card.setConfig({})).toThrow("sources is required");
+    expect(() => card.setConfig({})).toThrow("source is required");
   });
 
-  it("throws with empty sources array", () => {
+  it("throws when source has unknown plugin", () => {
     const card = makeCard();
-    expect(() => card.setConfig({ sources: [] })).toThrow("sources is required");
-  });
-
-  it("throws when all sources have unknown plugin", () => {
-    const card = makeCard();
-    expect(() => card.setConfig({ sources: [{ plugin: "unknown" as "rss" }] })).toThrow(
-      "sources must contain at least one entity"
+    expect(() => card.setConfig({ source: { plugin: "unknown" as "rss" } })).toThrow(
+      "source must contain at least one entity"
     );
   });
 
   it("falls back to entity id when rss title is omitted", () => {
     const card = makeCard();
-    card.setConfig({ sources: [{ plugin: "rss", entities: [{ entity: "sensor.abc_feed" }] }] });
+    card.setConfig({ source: { plugin: "rss", entities: [{ entity: "sensor.abc_feed" }] } });
     card.hass = makeHass("sensor.abc_feed", { entries: [] });
     expect(card.shadowRoot?.querySelector(".news-title")?.textContent).toBe("sensor.abc_feed");
   });
@@ -247,11 +242,11 @@ describe("HaNewsCard", () => {
     expect(card.shadowRoot!.textContent).toBe("");
   });
 
-  it("getStubConfig returns sources-based config", () => {
+  it("getStubConfig returns source config", () => {
     const Cls = customElements.get("ha-news-card") as unknown as { getStubConfig(): object };
     const cfg = Cls.getStubConfig() as any;
-    expect(cfg.sources[0].plugin).toBe("rss");
-    expect(cfg.sources[0].entities[0].entity).toBe("sensor.abc_feed");
+    expect(cfg.source.plugin).toBe("rss");
+    expect(cfg.source.entities[0].entity).toBe("sensor.abc_feed");
   });
 
   it("getCardSize uses height when set", () => {
@@ -289,10 +284,13 @@ describe("HaNewsCard", () => {
     const conn = makeConn();
     const card = makeCard();
     card.setConfig({
-      sources: [
-        { plugin: "rss", entities: [{ entity: "sensor.abc_feed", title: "ABC" }] },
-        { plugin: "rss", entities: [{ entity: "sensor.wsj_feed", title: "WSJ" }] },
-      ],
+      source: {
+        plugin: "rss",
+        entities: [
+          { entity: "sensor.abc_feed", title: "ABC" },
+          { entity: "sensor.wsj_feed", title: "WSJ" },
+        ],
+      },
       rotate_interval: 10,
     });
     card.hass = {
@@ -328,10 +326,13 @@ describe("HaNewsCard", () => {
     const conn = makeConn();
     const card = makeCard();
     card.setConfig({
-      sources: [
-        { plugin: "rss", entities: [{ entity: "sensor.abc_feed", title: "ABC" }] },
-        { plugin: "rss", entities: [{ entity: "sensor.wsj_feed", title: "WSJ" }] },
-      ],
+      source: {
+        plugin: "rss",
+        entities: [
+          { entity: "sensor.abc_feed", title: "ABC" },
+          { entity: "sensor.wsj_feed", title: "WSJ" },
+        ],
+      },
       // no rotate_interval — defaults to 10s
     });
     card.hass = {
@@ -351,10 +352,13 @@ describe("HaNewsCard", () => {
     const conn = makeConn();
     const card = makeCard();
     card.setConfig({
-      sources: [
-        { plugin: "rss", entities: [{ entity: "sensor.abc_feed", title: "ABC" }] },
-        { plugin: "rss", entities: [{ entity: "sensor.wsj_feed", title: "WSJ" }] },
-      ],
+      source: {
+        plugin: "rss",
+        entities: [
+          { entity: "sensor.abc_feed", title: "ABC" },
+          { entity: "sensor.wsj_feed", title: "WSJ" },
+        ],
+      },
       rotate_interval: 10,
     });
     card.hass = {
@@ -385,10 +389,13 @@ describe("HaNewsCard", () => {
     vi.useFakeTimers();
     const card = makeCard();
     card.setConfig({
-      sources: [
-        { plugin: "rss", entities: [{ entity: "sensor.abc_feed", title: "ABC" }] },
-        { plugin: "rss", entities: [{ entity: "sensor.wsj_feed", title: "WSJ" }] },
-      ],
+      source: {
+        plugin: "rss",
+        entities: [
+          { entity: "sensor.abc_feed", title: "ABC" },
+          { entity: "sensor.wsj_feed", title: "WSJ" },
+        ],
+      },
       rotate_interval: 10,
     });
     card.hass = makeHass("sensor.abc_feed", { entries: [] });
@@ -402,13 +409,17 @@ describe("HaNewsCard", () => {
     vi.useFakeTimers();
     const conn = makeConn();
     const card = makeCard();
-    card.setConfig({
-      sources: [
-        { plugin: "rss", entities: [{ entity: "sensor.abc_feed", title: "ABC" }] },
-        { plugin: "rss", entities: [{ entity: "sensor.wsj_feed", title: "WSJ" }] },
-      ],
+    const twoFeedConfig = {
+      source: {
+        plugin: "rss" as const,
+        entities: [
+          { entity: "sensor.abc_feed", title: "ABC" },
+          { entity: "sensor.wsj_feed", title: "WSJ" },
+        ],
+      },
       rotate_interval: 10,
-    });
+    };
+    card.setConfig(twoFeedConfig);
     card.hass = {
       connection: conn,
       states: {
@@ -418,13 +429,7 @@ describe("HaNewsCard", () => {
     };
     vi.advanceTimersByTime(10000); // advance to WSJ
     expect(card.shadowRoot!.querySelector(".news-title")?.textContent).toBe("WSJ");
-    card.setConfig({
-      sources: [
-        { plugin: "rss", entities: [{ entity: "sensor.abc_feed", title: "ABC" }] },
-        { plugin: "rss", entities: [{ entity: "sensor.wsj_feed", title: "WSJ" }] },
-      ],
-      rotate_interval: 10,
-    });
+    card.setConfig(twoFeedConfig);
     card.hass = {
       connection: conn,
       states: {
@@ -436,27 +441,10 @@ describe("HaNewsCard", () => {
     vi.useRealTimers();
   });
 
-  it("combines rss and polymarket slots and rotates", () => {
-    vi.useFakeTimers();
-    const conn = makeConn();
+  it("no rotation timer for polymarket source", () => {
     const card = makeCard();
-    card.setConfig({
-      sources: [
-        { plugin: "rss", entities: [{ entity: "sensor.abc_feed", title: "ABC" }] },
-        { plugin: "polymarket", entity: "sensor.polymarket_news" },
-      ],
-      rotate_interval: 5,
-    });
-    card.hass = {
-      connection: conn,
-      states: {
-        "sensor.abc_feed": { attributes: { entries: [] } },
-        "sensor.polymarket_news": { attributes: { scene: 1, events: [] } },
-      },
-    };
-    expect(card.shadowRoot!.querySelector(".news-title")?.textContent).toBe("ABC");
-    vi.advanceTimersByTime(5000);
-    expect(card.shadowRoot!.querySelector(".news-title")?.textContent).toContain("#1");
-    vi.useRealTimers();
+    card.setConfig(polyConfig());
+    card.hass = makeHass("sensor.polymarket_news", { scene: 1, events: [] });
+    expect((card as any)._rotateTimer).toBeNull();
   });
 });
