@@ -290,8 +290,8 @@ describe("HaNewsCard", () => {
           { entity: "sensor.abc_feed", title: "ABC" },
           { entity: "sensor.wsj_feed", title: "WSJ" },
         ],
+        rotate_every: 10,
       },
-      rotate_every: 10,
     });
     card.hass = {
       connection: conn,
@@ -358,8 +358,8 @@ describe("HaNewsCard", () => {
           { entity: "sensor.abc_feed", title: "ABC" },
           { entity: "sensor.wsj_feed", title: "WSJ" },
         ],
+        rotate_every: 10,
       },
-      rotate_every: 10,
     });
     card.hass = {
       connection: conn,
@@ -395,8 +395,8 @@ describe("HaNewsCard", () => {
           { entity: "sensor.abc_feed", title: "ABC" },
           { entity: "sensor.wsj_feed", title: "WSJ" },
         ],
+        rotate_every: 10,
       },
-      rotate_every: 10,
     });
     card.hass = makeHass("sensor.abc_feed", { entries: [] });
     card.disconnectedCallback();
@@ -416,8 +416,8 @@ describe("HaNewsCard", () => {
           { entity: "sensor.abc_feed", title: "ABC" },
           { entity: "sensor.wsj_feed", title: "WSJ" },
         ],
+        rotate_every: 10,
       },
-      rotate_every: 10,
     };
     card.setConfig(twoFeedConfig);
     card.hass = {

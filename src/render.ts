@@ -1,5 +1,5 @@
 import { html, nothing, type TemplateResult } from "lit";
-import type { PolyMarket, PolymarketAttributes, RssAttributes } from "./types.js";
+import type { PolymarketAttributes, RssAttributes } from "./types.js";
 
 const DEFAULT_IMAGE = "https://brands.home-assistant.io/homeassistant/icon.png";
 
