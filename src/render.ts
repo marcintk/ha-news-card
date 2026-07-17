@@ -51,7 +51,7 @@ export function rssHtml(attrs: RssAttributes, limit: number, title: string): Tem
     <div class="news-title">${title}</div>
     <table class="news-table">
       <colgroup>
-        <col style="width:78px" />
+        <col class="img-col" />
         <col />
       </colgroup>
       ${entries.map(
@@ -83,7 +83,7 @@ export function polymarketHtml(
     <div class="news-title">PolyMarket (#${scene})</div>
     <table class="news-table poly-table">
       <colgroup>
-        <col style="width:78px" />
+        <col class="img-col" />
         <col />
       </colgroup>
       ${events.map((event, i) => {
