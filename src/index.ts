@@ -2,7 +2,7 @@
 import { html, nothing, render } from "lit";
 import { polymarketHtml, rssHtml } from "./render.js";
 import { SubscriptionManager } from "./subscription.js";
-import type { CardConfig, Hass, PolymarketAttributes, RssAttributes } from "./types.js";
+import type { CardConfig, Hass, PolymarketAttributes, RssAttributes, RssSource } from "./types.js";
 
 const CARD_STYLES = `
   :host { display: block; }
@@ -217,7 +217,7 @@ class HaNewsCard extends HTMLElement {
       this._rotateTimer = null;
     }
     if (this._slots[0]?.plugin !== "rss" || this._slots.length <= 1) return;
-    const interval = (config.rotate_every ?? 60) * 1000;
+    const interval = ((config.source as RssSource).rotate_every ?? 60) * 1000;
     this._rotateTimer = setInterval(() => {
       this._slotIdx = (this._slotIdx + 1) % this._slots.length;
       if (this._hass && this._config) this._render();
@@ -312,8 +312,8 @@ class HaNewsCard extends HTMLElement {
         plugin: "rss",
         entities: [{ entity: "sensor.abc_feed", title: "ABC News" }],
         limit: 5,
+        rotate_every: 60,
       },
-      rotate_every: 60,
     };
   }
 }

@@ -7,6 +7,7 @@ export interface RssSource {
   plugin: "rss";
   entities: RssEntityRef[];
   limit?: number;
+  rotate_every?: number;
 }
 
 export interface PolymarketSource {
@@ -19,7 +20,6 @@ export interface PolymarketSource {
 
 export interface CardConfig {
   source: RssSource | PolymarketSource;
-  rotate_every?: number;
   height?: string;
   title_color?: string;
 }
