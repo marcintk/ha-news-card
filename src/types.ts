@@ -22,6 +22,7 @@ export interface CardConfig {
   source: RssSource | PolymarketSource;
   height?: string;
   title_color?: string;
+  show_version?: boolean;
 }
 
 export interface RssEntry {
