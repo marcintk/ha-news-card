@@ -447,4 +447,18 @@ describe("HaNewsCard", () => {
     card.hass = makeHass("sensor.polymarket_news", { scene: 1, events: [] });
     expect((card as any)._rotateTimer).toBeNull();
   });
+
+  it("shows version badge when show_version is true", () => {
+    const card = makeCard();
+    card.setConfig({ ...rssConfig(), show_version: true });
+    card.hass = makeHass("sensor.abc_feed", { entries: [] });
+    expect(card.shadowRoot!.querySelector(".card-version")).not.toBeNull();
+  });
+
+  it("hides version badge when show_version is not set", () => {
+    const card = makeCard();
+    card.setConfig(rssConfig());
+    card.hass = makeHass("sensor.abc_feed", { entries: [] });
+    expect(card.shadowRoot!.querySelector(".card-version")).toBeNull();
+  });
 });

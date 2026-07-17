@@ -121,6 +121,17 @@ const CARD_STYLES = `
   .poly-ends {
     padding: 0 4px;
   }
+
+  .card-version {
+    position: absolute;
+    top: 4px;
+    right: 6px;
+    font-family: monospace;
+    font-size: 9px;
+    color: var(--disabled-text-color, #888);
+    pointer-events: none;
+    z-index: 1;
+  }
 `;
 
 type RssSlot = { plugin: "rss"; entity: string; title: string; limit: number };
@@ -272,8 +283,11 @@ class HaNewsCard extends HTMLElement {
               slot.title_length
             );
 
+      const versionBadge = this._config.show_version
+        ? html`<div class="card-version">v${__CARD_VERSION__}</div>`
+        : nothing;
       render(
-        html`<style>${CARD_STYLES}</style><ha-card style=${haCardStyle ?? nothing}>${content}</ha-card>`,
+        html`<style>${CARD_STYLES}</style><ha-card style=${haCardStyle ?? nothing}>${versionBadge}${content}</ha-card>`,
         this._root
       );
     } catch (e) {
