@@ -256,13 +256,11 @@ class HaNewsCard extends HTMLElement {
       const slot = this._slots[this._slotIdx];
       const attrs = this._hass.states[slot.entity]?.attributes ?? {};
       const { height, title_color } = this._config;
-      const haCardStyle =
-        [
-          height && `height:${height};min-height:${height};max-height:${height}`,
-          title_color && `--ha-news-title-color:${title_color}`,
-        ]
-          .filter(Boolean)
-          .join(";") || undefined;
+      const heightStyle = height
+        ? `height:${height};min-height:${height};max-height:${height}`
+        : "";
+      const colorStyle = title_color ? `--ha-news-title-color:${title_color}` : "";
+      const haCardStyle = [heightStyle, colorStyle].filter(Boolean).join(";") || undefined;
 
       const content =
         slot.plugin === "rss"
@@ -279,21 +277,17 @@ class HaNewsCard extends HTMLElement {
         this._root
       );
     } catch (e) {
-      this._showError((e as Error).message);
+      render(
+        html`<ha-card>
+          <div style="padding:12px;color:var(--error-color,red);font-size:13px;">
+            <b>ha-news-card error:</b><br />${(e as Error).message}
+          </div>
+        </ha-card>`,
+        this._root
+      );
       // biome-ignore lint/suspicious/noConsole: intentional render error logging
       console.error("ha-news-card render error:", e);
     }
-  }
-
-  private _showError(msg: string): void {
-    render(
-      html`<ha-card>
-        <div style="padding:12px;color:var(--error-color,red);font-size:13px;">
-          <b>ha-news-card error:</b><br />${msg}
-        </div>
-      </ha-card>`,
-      this._root
-    );
   }
 
   getCardSize(): number {
