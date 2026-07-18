@@ -1,0 +1,169 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`polymarketHtml > renders empty events 1`] = `
+"<!---->
+    <div class="news-title">PolyMarket (#<!--?-->unknown)</div>
+    <table class="news-table poly-table">
+      <colgroup>
+        <col class="img-col">
+        <col>
+      </colgroup>
+      <!--?-->
+    </table>
+  "
+`;
+
+exports[`polymarketHtml > renders expired event 1`] = `
+"<!---->
+    <div class="news-title">PolyMarket (#<!--?-->3)</div>
+    <table class="news-table poly-table">
+      <colgroup>
+        <col class="img-col">
+        <col>
+      </colgroup>
+      <!--?--><!---->
+          <tr style="background-color:var(--ha-card-background, var(--card-background-color, transparent))">
+            <td class="poly-img-cell">
+              <img class="poly-thumb" src="http://icon/a.png">
+            </td>
+            <td class="poly-text-cell">
+              <div class="poly-event-title"><!--?-->Will event A happen?</div>
+              <div class="poly-data-row">
+                <div class="poly-market-titles">
+                  <!--?--><!----><span><!--?-->1. Yes</span><!----><!----><span><!--?-->2. No</span><!----><!----><span><!--?--></span><!---->
+                </div>
+                <div class="poly-num">
+                  <!--?--><!----><span><!--?-->30K</span><!----><!----><span><!--?-->20K</span><!----><!----><span><!--?--></span><!---->
+                </div>
+                <div class="poly-num">
+                  <!--?--><!----><span><!--?-->8K</span><!----><!----><span><!--?-->4K</span><!----><!----><span><!--?--></span><!---->
+                </div>
+                <div class="poly-num">
+                  <!--?--><!----><span><!--?-->65.5%</span><!----><!----><span><!--?-->34.5%</span><!----><!----><span><!--?--></span><!---->
+                </div>
+              </div>
+              <div class="poly-footer">
+                <span class="poly-summary">L:<!--?-->50K&nbsp;V:<!--?-->12K</span>
+                <span class="poly-ends">ends <!--?-->3 days ago</span>
+              </div>
+            </td>
+          </tr>
+        <!---->
+    </table>
+  "
+`;
+
+exports[`polymarketHtml > renders standard event list 1`] = `
+"<!---->
+    <div class="news-title">PolyMarket (#<!--?-->3)</div>
+    <table class="news-table poly-table">
+      <colgroup>
+        <col class="img-col">
+        <col>
+      </colgroup>
+      <!--?--><!---->
+          <tr style="background-color:var(--ha-card-background, var(--card-background-color, transparent))">
+            <td class="poly-img-cell">
+              <img class="poly-thumb" src="http://icon/a.png">
+            </td>
+            <td class="poly-text-cell">
+              <div class="poly-event-title"><!--?-->Will event A happen?</div>
+              <div class="poly-data-row">
+                <div class="poly-market-titles">
+                  <!--?--><!----><span><!--?-->1. Yes</span><!----><!----><span><!--?-->2. No</span><!----><!----><span><!--?--></span><!---->
+                </div>
+                <div class="poly-num">
+                  <!--?--><!----><span><!--?-->30K</span><!----><!----><span><!--?-->20K</span><!----><!----><span><!--?--></span><!---->
+                </div>
+                <div class="poly-num">
+                  <!--?--><!----><span><!--?-->8K</span><!----><!----><span><!--?-->4K</span><!----><!----><span><!--?--></span><!---->
+                </div>
+                <div class="poly-num">
+                  <!--?--><!----><span><!--?-->65.5%</span><!----><!----><span><!--?-->34.5%</span><!----><!----><span><!--?--></span><!---->
+                </div>
+              </div>
+              <div class="poly-footer">
+                <span class="poly-summary">L:<!--?-->50K&nbsp;V:<!--?-->12K</span>
+                <span class="poly-ends">ends <!--?-->in 10 days</span>
+              </div>
+            </td>
+          </tr>
+        <!---->
+    </table>
+  "
+`;
+
+exports[`rssHtml > renders feed with title 1`] = `
+"<!---->
+    <div class="news-title"><!--?-->My Feed</div>
+    <table class="news-table">
+      <colgroup>
+        <col class="img-col">
+        <col>
+      </colgroup>
+      <!--?--><!---->
+          <tr style="background-color:var(--ha-card-background, var(--card-background-color, transparent))">
+            <td class="rss-img-cell">
+              <img class="rss-thumb" src="http://img/b.jpg">
+            </td>
+            <td class="rss-text-cell">
+              <div class="rss-text-inner"><!--?-->Story B<span class="rss-time">&nbsp;(<!--?-->5m ago)</span></div>
+            </td>
+          </tr>
+        <!----><!---->
+          <tr style="background-color:var(--secondary-background-color)">
+            <td class="rss-img-cell">
+              <img class="rss-thumb" src="https://brands.home-assistant.io/homeassistant/icon.png">
+            </td>
+            <td class="rss-text-cell">
+              <div class="rss-text-inner"><!--?-->Story A<span class="rss-time">&nbsp;(<!--?-->10m ago)</span></div>
+            </td>
+          </tr>
+        <!----><!---->
+          <tr style="background-color:var(--ha-card-background, var(--card-background-color, transparent))">
+            <td class="rss-img-cell">
+              <img class="rss-thumb" src="https://brands.home-assistant.io/homeassistant/icon.png">
+            </td>
+            <td class="rss-text-cell">
+              <div class="rss-text-inner"><!--?-->Story C<span class="rss-time">&nbsp;(<!--?-->2h ago)</span></div>
+            </td>
+          </tr>
+        <!---->
+    </table>
+  "
+`;
+
+exports[`rssHtml > renders with empty entries 1`] = `
+"<!---->
+    <div class="news-title"><!--?-->Empty</div>
+    <table class="news-table">
+      <colgroup>
+        <col class="img-col">
+        <col>
+      </colgroup>
+      <!--?-->
+    </table>
+  "
+`;
+
+exports[`rssHtml > renders with limit=1 (single entry) 1`] = `
+"<!---->
+    <div class="news-title"><!--?-->My Feed</div>
+    <table class="news-table">
+      <colgroup>
+        <col class="img-col">
+        <col>
+      </colgroup>
+      <!--?--><!---->
+          <tr style="background-color:var(--ha-card-background, var(--card-background-color, transparent))">
+            <td class="rss-img-cell">
+              <img class="rss-thumb" src="http://img/b.jpg">
+            </td>
+            <td class="rss-text-cell">
+              <div class="rss-text-inner"><!--?-->Story B<span class="rss-time">&nbsp;(<!--?-->5m ago)</span></div>
+            </td>
+          </tr>
+        <!---->
+    </table>
+  "
+`;
