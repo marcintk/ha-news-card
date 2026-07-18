@@ -31,10 +31,10 @@ The card reads data from Home Assistant sensor entities. You need at least one o
   Each entry should expose `title`, `last_updated` (minutes since published), and optionally `image`
   / `picture`.
 - **Polymarket plugin** — a sensor whose attributes contain an `events` array of Polymarket
-  prediction markets (e.g. a custom REST/template sensor scraping the Polymarket API). Each event
-  should expose `title`, `icon`, `liquidity`, `volume24hr`, `endsAt`, and a `markets` array. The
-  sensor is expected to rotate its own data (via `attributes.scene`); the card simply displays
-  whatever the entity currently holds.
+  prediction markets (e.g. the [ha_polymarket](https://github.com/marcintk/ha_polymarket) HACS
+  integration). Each event should expose `title`, `icon`, `liquidity`, `volume24hr`, `endsAt`, and a
+  `markets` array. The sensor is expected to rotate its own data (via `attributes.scene`); the card
+  simply displays whatever the entity currently holds.
 
 ## Installation
 
