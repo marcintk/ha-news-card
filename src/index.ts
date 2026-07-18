@@ -15,30 +15,6 @@ type PolySlot = {
 };
 type Slot = RssSlot | PolySlot;
 
-function buildSlots(config: CardConfig): Slot[] {
-  const { source } = config;
-  if (source.plugin === "rss") {
-    return source.entities.map((ref) => ({
-      plugin: "rss" as const,
-      entity: ref.entity,
-      title: ref.title ?? ref.entity,
-      limit: source.limit ?? 5,
-    }));
-  }
-  if (source.plugin === "polymarket") {
-    return [
-      {
-        plugin: "polymarket" as const,
-        entity: source.entity,
-        event_limit: source.event_limit ?? 5,
-        market_limit: source.market_limit ?? 3,
-        title_length: source.title_length ?? 50,
-      },
-    ];
-  }
-  return [];
-}
-
 class HaNewsCard extends HTMLElement {
   private readonly _root: ShadowRoot;
   private _config: CardConfig | null;
@@ -63,7 +39,26 @@ class HaNewsCard extends HTMLElement {
 
   setConfig(config: CardConfig): void {
     if (!config.source) throw new Error("source is required");
-    const slots = buildSlots(config);
+    const { source } = config;
+    const slots: Slot[] =
+      source.plugin === "rss"
+        ? source.entities.map((ref) => ({
+            plugin: "rss" as const,
+            entity: ref.entity,
+            title: ref.title ?? ref.entity,
+            limit: source.limit ?? 5,
+          }))
+        : source.plugin === "polymarket"
+          ? [
+              {
+                plugin: "polymarket" as const,
+                entity: source.entity,
+                event_limit: source.event_limit ?? 5,
+                market_limit: source.market_limit ?? 3,
+                title_length: source.title_length ?? 50,
+              },
+            ]
+          : [];
     if (!slots.length) throw new Error("source must contain at least one entity");
     this._config = config;
     this._slots = slots;
