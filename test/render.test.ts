@@ -9,7 +9,7 @@ function doc(template: TemplateResult): HTMLElement {
 }
 
 describe("humanNumber", () => {
-  it("formats billions", () => expect(humanNumber(1_500_000_000)).toBe("1.5G"));
+  it("formats billions", () => expect(humanNumber(1_500_000_000)).toBe("1.5B"));
   it("formats millions", () => expect(humanNumber(2_300_000)).toBe("2.3M"));
   it("formats thousands", () => expect(humanNumber(4_700)).toBe("4.7K"));
   it("formats small numbers", () => expect(humanNumber(42)).toBe("42"));
