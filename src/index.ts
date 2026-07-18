@@ -1,8 +1,9 @@
 /// <reference path="../node_modules/ha-card-shared/globals.d.ts" />
+
+import { SubscriptionManager } from "ha-card-shared/runtime";
 import { html, nothing, render } from "lit";
 import CARD_STYLES from "./card.css";
 import { polymarketHtml, rssHtml } from "./render.js";
-import { SubscriptionManager } from "./subscription.js";
 import type { CardConfig, Hass, PolymarketAttributes, RssAttributes, RssSource } from "./types.js";
 
 type RssSlot = { plugin: "rss"; entity: string; title: string; limit: number };
