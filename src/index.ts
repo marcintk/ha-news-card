@@ -1,138 +1,9 @@
 /// <reference path="../node_modules/ha-card-shared/globals.d.ts" />
 import { html, nothing, render } from "lit";
+import CARD_STYLES from "./card.css";
 import { polymarketHtml, rssHtml } from "./render.js";
 import { SubscriptionManager } from "./subscription.js";
 import type { CardConfig, Hass, PolymarketAttributes, RssAttributes, RssSource } from "./types.js";
-
-const CARD_STYLES = `
-  :host { display: block; }
-
-  ha-card {
-    --row-height: 67px;
-    padding: 2px;
-    box-sizing: border-box;
-    color: var(--secondary-text-color, darkgray);
-    font-size: 18px;
-    line-height: 1.2;
-    overflow: hidden;
-  }
-
-  .news-title {
-    color: var(--ha-news-title-color, #2196F3);
-    letter-spacing: 0.1em;
-    padding: 2px;
-    font-weight: normal;
-  }
-
-  .news-table {
-    width: 100%;
-    border-spacing: 0;
-    table-layout: fixed;
-  }
-
-  .rss-img-cell {
-    padding: 4px;
-    vertical-align: top;
-  }
-
-  .rss-thumb {
-    width: 75px;
-    height: var(--row-height);
-    border-radius: 4px;
-    object-fit: cover;
-    display: block;
-  }
-
-  .rss-text-cell {
-    padding: 4px;
-    vertical-align: top;
-    line-height: 1.3;
-  }
-
-  .rss-text-inner {
-    max-height: var(--row-height);
-    overflow: hidden;
-  }
-
-  .rss-time {
-    font-size: 14px;
-    color: var(--secondary-text-color, darkgray);
-  }
-
-  .poly-table {
-    table-layout: auto;
-  }
-
-  .poly-img-cell {
-    padding: 4px;
-    vertical-align: top;
-  }
-
-  .poly-thumb {
-    width: 75px;
-    height: var(--row-height);
-    border-radius: 4px;
-    object-fit: cover;
-    display: block;
-  }
-
-  .poly-text-cell {
-    vertical-align: top;
-    padding: 0;
-  }
-
-  .poly-event-title {
-    font-size: 15px;
-    padding: 0 4px;
-  }
-
-  .poly-data-row {
-    display: flex;
-  }
-
-  .poly-market-titles {
-    flex: 1;
-    font-size: 12px;
-    padding: 0 4px;
-  }
-
-  .poly-market-titles span,
-  .poly-num span {
-    display: block;
-  }
-
-  .poly-num {
-    width: 40px;
-    text-align: right;
-    font-size: 12px;
-    padding: 0 4px;
-  }
-
-  .poly-footer {
-    display: flex;
-    font-size: 10px;
-  }
-
-  .poly-summary {
-    flex: 1;
-    padding: 0 4px;
-  }
-
-  .poly-ends {
-    padding: 0 4px;
-  }
-
-  .card-version {
-    position: absolute;
-    top: 4px;
-    right: 6px;
-    font-family: monospace;
-    font-size: 9px;
-    color: var(--disabled-text-color, #888);
-    pointer-events: none;
-    z-index: 1;
-  }
-`;
 
 type RssSlot = { plugin: "rss"; entity: string; title: string; limit: number };
 type PolySlot = {
@@ -143,30 +14,6 @@ type PolySlot = {
   title_length: number;
 };
 type Slot = RssSlot | PolySlot;
-
-function buildSlots(config: CardConfig): Slot[] {
-  const { source } = config;
-  if (source.plugin === "rss") {
-    return source.entities.map((ref) => ({
-      plugin: "rss" as const,
-      entity: ref.entity,
-      title: ref.title ?? ref.entity,
-      limit: source.limit ?? 5,
-    }));
-  }
-  if (source.plugin === "polymarket") {
-    return [
-      {
-        plugin: "polymarket" as const,
-        entity: source.entity,
-        event_limit: source.event_limit ?? 5,
-        market_limit: source.market_limit ?? 3,
-        title_length: source.title_length ?? 50,
-      },
-    ];
-  }
-  return [];
-}
 
 class HaNewsCard extends HTMLElement {
   private readonly _root: ShadowRoot;
@@ -192,7 +39,26 @@ class HaNewsCard extends HTMLElement {
 
   setConfig(config: CardConfig): void {
     if (!config.source) throw new Error("source is required");
-    const slots = buildSlots(config);
+    const { source } = config;
+    const slots: Slot[] =
+      source.plugin === "rss"
+        ? source.entities.map((ref) => ({
+            plugin: "rss" as const,
+            entity: ref.entity,
+            title: ref.title ?? ref.entity,
+            limit: source.limit ?? 5,
+          }))
+        : source.plugin === "polymarket"
+          ? [
+              {
+                plugin: "polymarket" as const,
+                entity: source.entity,
+                event_limit: source.event_limit ?? 5,
+                market_limit: source.market_limit ?? 3,
+                title_length: source.title_length ?? 50,
+              },
+            ]
+          : [];
     if (!slots.length) throw new Error("source must contain at least one entity");
     this._config = config;
     this._slots = slots;
