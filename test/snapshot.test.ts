@@ -1,3 +1,4 @@
+import { snapHtml } from "ha-card-shared/test-utils";
 import { render, type TemplateResult } from "lit";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { polymarketHtml, rssHtml } from "../src/render.js";
@@ -5,7 +6,7 @@ import { polymarketHtml, rssHtml } from "../src/render.js";
 function doc(template: TemplateResult): string {
   const el = document.createElement("div");
   render(template, el);
-  return el.innerHTML.replace(/<!--\?lit\$\d+\$-->/g, "<!--?-->");
+  return snapHtml(el.innerHTML);
 }
 
 const rssAttrs = {
