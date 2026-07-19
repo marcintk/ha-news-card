@@ -2,16 +2,9 @@
 
 # ha-news-card
 
-## Module Map
+## Design Invariants
 
-Every `src/*.ts` module has a corresponding `test/*.test.ts`. New source files must ship with their
-test file.
-
-| Source file     | Test file                | Responsibility                                                                                       |
-| --------------- | ------------------------ | ---------------------------------------------------------------------------------------------------- |
-| `src/index.ts`  | `test/index.test.ts`     | Custom element class, HA lifecycle hooks, slot rotation, render orchestration, CSS styles            |
-| `src/render.ts` | `test/render.test.ts`    | `rssHtml()`, `polymarketHtml()` — Lit HTML generators for each plugin type                           |
-| `src/types.ts`  | _(types only, no logic)_ | All shared interfaces: `CardConfig`, `Source`, `RssAttributes`, `PolymarketAttributes`, `Hass`, etc. |
+<!-- TODO: document visual/UX constraints that must survive refactors -->
 
 ## Architecture Notes
 
