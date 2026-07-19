@@ -1,4 +1,4 @@
-@node_modules/ha-card-shared/CLAUDE-SHARED.md @package.json @TODO.md
+@node_modules/ha-card-shared/CLAUDE-SHARED.md @package.json
 
 # ha-news-card
 
@@ -32,13 +32,3 @@ test file.
   is set. Static styles stay static; only the variable value changes per render. New overridable
   colours follow the same pattern: add the CSS variable + fallback in `CARD_STYLES`, add the option
   to `CardConfig`, and inject it in `_render()`.
-
-## TODO.md discipline
-
-`TODO.md` is the canonical list of known bugs and open issues.
-
-- **When a new bug is found** — add to `TODO.md` with a one-line summary, the affected file:line,
-  and a brief fix description.
-- **When a bug is fixed and merged** — remove its entry in the same PR that fixes it.
-- **Do not leave stale entries.** If a fix makes an entry obsolete, remove it and note why in the PR
-  description.
