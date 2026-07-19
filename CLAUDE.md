@@ -15,19 +15,10 @@ test file.
 
 ## Architecture Notes
 
-- **Shadow DOM / Lit rendering**: Lit's `render()` patches the shadow DOM on every render —
-  efficient diffing, no full `innerHTML` replacement.
-- **Slot rotation**: `setConfig()` builds `_slots: Slot[]` inline from `config.source` — one entry
-  per RSS entity or one entry for a Polymarket source. `_slotIdx` advances on a `setInterval`
-  (`rotate_every` seconds, default 60). Only one slot is rendered at a time.
-- **WebSocket subscription**: card subscribes to `state_changed` events on first `set hass`;
-  callback calls `_scheduleRender()`, which arms a 500 ms debounce timer. Rendering always uses
-  `_hass.states`, not the event payload.
-- **Security**: Lit auto-escapes all interpolated text values in `html` templates — no manual
-  escaping needed in render paths.
-- **Color theming**: overridable colours use a two-layer CSS variable pattern —
-  `var(--ha-news-<name>-color, <theme-or-hardcoded-fallback>)`. The card injects
-  `--ha-news-<name>-color` as an inline style on `<ha-card>` when the matching `CardConfig` option
-  is set. Static styles stay static; only the variable value changes per render. New overridable
-  colours follow the same pattern: add the CSS variable + fallback in `CARD_STYLES`, add the option
-  to `CardConfig`, and inject it in `_render()`.
+- **Slots**: `setConfig()` builds `_slots: Slot[]` from `config.source` — one per RSS entity or one
+  for a Polymarket source. `_slotIdx` rotates on `setInterval` (`rotate_every` seconds, default 60).
+- **Render trigger**: state change events fire `_scheduleRender()` (500 ms debounce). Rendering
+  always reads `_hass.states` — never the event payload.
+- **Color theming**: two-layer CSS variable pattern — `var(--ha-news-<name>-color, <fallback>)`. To
+  add a new overridable color: add the variable + fallback in `CARD_STYLES`, add the option to
+  `CardConfig`, inject it as an inline style on `<ha-card>` in `_render()`.
