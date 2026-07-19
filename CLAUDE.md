@@ -7,20 +7,19 @@
 Every `src/*.ts` module has a corresponding `test/*.test.ts`. New source files must ship with their
 test file.
 
-| Source file           | Test file                   | Responsibility                                                                                       |
-| --------------------- | --------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `src/index.ts`        | `test/index.test.ts`        | Custom element class, HA lifecycle hooks, slot rotation, render orchestration, CSS styles            |
-| `src/render.ts`       | `test/render.test.ts`       | `rssHtml()`, `polymarketHtml()` — Lit HTML generators for each plugin type                           |
-| `src/subscription.ts` | `test/subscription.test.ts` | `SubscriptionManager` — WebSocket subscribe/unsubscribe with stale-gen guard                         |
-| `src/types.ts`        | _(types only, no logic)_    | All shared interfaces: `CardConfig`, `Source`, `RssAttributes`, `PolymarketAttributes`, `Hass`, etc. |
+| Source file     | Test file                | Responsibility                                                                                       |
+| --------------- | ------------------------ | ---------------------------------------------------------------------------------------------------- |
+| `src/index.ts`  | `test/index.test.ts`     | Custom element class, HA lifecycle hooks, slot rotation, render orchestration, CSS styles            |
+| `src/render.ts` | `test/render.test.ts`    | `rssHtml()`, `polymarketHtml()` — Lit HTML generators for each plugin type                           |
+| `src/types.ts`  | _(types only, no logic)_ | All shared interfaces: `CardConfig`, `Source`, `RssAttributes`, `PolymarketAttributes`, `Hass`, etc. |
 
 ## Architecture Notes
 
 - **Shadow DOM / Lit rendering**: Lit's `render()` patches the shadow DOM on every render —
   efficient diffing, no full `innerHTML` replacement.
-- **Slot rotation**: `buildSlots()` flattens `config.sources` into a `Slot[]` — one entry per RSS
-  entity or Polymarket entity. `_slotIdx` advances on a `setInterval` (`rotate_interval` seconds,
-  default 10). Only one slot is rendered at a time.
+- **Slot rotation**: `setConfig()` builds `_slots: Slot[]` inline from `config.source` — one entry
+  per RSS entity or one entry for a Polymarket source. `_slotIdx` advances on a `setInterval`
+  (`rotate_every` seconds, default 60). Only one slot is rendered at a time.
 - **WebSocket subscription**: card subscribes to `state_changed` events on first `set hass`;
   callback calls `_scheduleRender()`, which arms a 500 ms debounce timer. Rendering always uses
   `_hass.states`, not the event payload.
