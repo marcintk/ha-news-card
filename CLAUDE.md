@@ -1,17 +1,21 @@
-@node_modules/ha-card-shared/CLAUDE-SHARED.md @package.json
+@node_modules/ha-card-shared/CLAUDE-SHARED.md
 
 # ha-news-card
 
-## Module Map
+## Design Invariants
 
-Every `src/*.ts` module has a corresponding `test/*.test.ts`. New source files must ship with their
-test file.
+Durable behavioral/UX constraints. Preserve unless the user explicitly changes them.
 
-| Source file     | Test file                | Responsibility                                                                                       |
-| --------------- | ------------------------ | ---------------------------------------------------------------------------------------------------- |
-| `src/index.ts`  | `test/index.test.ts`     | Custom element class, HA lifecycle hooks, slot rotation, render orchestration, CSS styles            |
-| `src/render.ts` | `test/render.test.ts`    | `rssHtml()`, `polymarketHtml()` — Lit HTML generators for each plugin type                           |
-| `src/types.ts`  | _(types only, no logic)_ | All shared interfaces: `CardConfig`, `Source`, `RssAttributes`, `PolymarketAttributes`, `Hass`, etc. |
+- RSS entries render newest-first: sorted ascending by `last_updated` (minutes ago), sliced to
+  `limit`
+- Slot rotation (`_rotateTimer`) only activates for multi-entity RSS — Polymarket is always a single
+  slot
+- State subscription fires `_scheduleRender()` (500 ms debounce); render always reads
+  `_hass.states`, never the event payload
+- Theming: `--ha-news-title-color` CSS variable injected via inline style on `<ha-card>`; two-layer
+  pattern with fallback in `CARD_STYLES`
+- Error state: renders inline `<ha-card>` with red message — never throws to the HA framework
+- Image fallback: `onImgError` swaps broken images to the HA brand icon
 
 ## Architecture Notes
 
