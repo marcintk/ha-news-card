@@ -1,12 +1,10 @@
 version: 2
 updates:
-  - package-ecosystem: npm
+  - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
-    allow:
-      - dependency-name: ha-card-shared
-  - package-ecosystem: github-actions
+  - package-ecosystem: npm
     directory: /
     schedule:
       interval: weekly

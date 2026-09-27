@@ -2,13 +2,23 @@ name: HACS Validation
 
 on:
   workflow_run:
-    workflows: ["Publish Release"]
+    workflows: ["Card Publish Release"]
     types: [completed]
   schedule:
     - cron: "0 0 * * *"
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   validate:
     if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
-    uses: marcintk/ha-card-shared/.github/workflows/shared-hacs-validation.yml@v1.4.1
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: HACS Action
+        uses: hacs/action@d556e736723344f83838d08488c983a15381059a # 22.5.0
+        with:
+          category: plugin

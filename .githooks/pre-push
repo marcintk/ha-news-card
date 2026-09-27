@@ -1,2 +1,3 @@
 #!/bin/sh
-exec node_modules/ha-card-shared/.githooks/pre-push
+set -e
+npm run test:coverage
