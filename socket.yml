@@ -1,0 +1,15 @@
+version: 2
+
+triggerPaths:
+  - "package.json"
+  - "package-lock.json"
+
+issueRules:
+  malware: true
+  telemetry: false
+
+githubApp:
+  enabled: true
+  dependencyOverviewEnabled: true
+  pullRequestAlertsEnabled: true
+  projectReportsEnabled: true

@@ -1,7 +1,7 @@
-import { snapHtml } from "ha-card-shared/test-utils";
 import { render, type TemplateResult } from "lit";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { polymarketHtml, rssHtml } from "../src/render.js";
+import { snapHtml } from "./test-utils.js";
 
 function doc(template: TemplateResult): string {
   const el = document.createElement("div");
