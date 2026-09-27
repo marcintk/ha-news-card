@@ -1,5 +1,12 @@
 # News Card
 
+<table>
+  <tr>
+    <td align="center"><img src="https://raw.githubusercontent.com/marcintk/ha-news-card/main/docs/preview-rss.png" alt="RSS preview" /><br /><sub>RSS feed</sub></td>
+    <td align="center"><img src="https://raw.githubusercontent.com/marcintk/ha-news-card/main/docs/preview-polymarket.png" alt="Polymarket preview" /><br /><sub>Polymarket events</sub></td>
+  </tr>
+</table>
+
 Home Assistant custom Lovelace card displaying news from RSS feeds and
 [Polymarket](https://polymarket.com) prediction events — one card, one plugin, a single unified
 layout with a large thumbnail on the left and headline text on the right.
@@ -18,13 +25,6 @@ entities on a timer; a Polymarket card re-renders whenever the entity state chan
 
 Bug or feature request? [Open an issue][new-issue]. Idea, question, or setup to share? [Start a
 discussion][discussions].
-
-<table>
-  <tr>
-    <td align="center"><img src="https://raw.githubusercontent.com/marcintk/ha-news-card/main/docs/preview-rss.png" alt="RSS preview" /><br /><sub>RSS feed</sub></td>
-    <td align="center"><img src="https://raw.githubusercontent.com/marcintk/ha-news-card/main/docs/preview-polymarket.png" alt="Polymarket preview" /><br /><sub>Polymarket events</sub></td>
-  </tr>
-</table>
 
 ## Requirements
 
