@@ -150,10 +150,6 @@ Numbers are abbreviated: `1.2K`, `3.4M`, `5.6G`. The header label is derived aut
 `attributes.scene` as `PolyMarket (#<scene>)`. The Polymarket sensor is expected to rotate its own
 data externally; the card re-renders whenever the entity state changes.
 
-## Development
-
-See [CLAUDE.md](CLAUDE.md) for build commands, contributing guidelines, and release instructions.
-
 <!-- Reference links -->
 
 [ci]: https://github.com/marcintk/ha-news-card/actions/workflows/card-build-and-test.yml
