@@ -3,6 +3,7 @@
   "version": "0.0.0-dev",
   "type": "module",
   "scripts": {
+    "prepare": "git config core.hooksPath .githooks 2>/dev/null || true",
     "build": "rollup -c",
     "build:prod": "NODE_ENV=production rollup -c",
     "dev": "rollup -c --watch",
@@ -18,8 +19,7 @@
     "typecheck": "tsc --noEmit",
     "check:ci": "tsc --noEmit && biome check src/ test/ && prettier --check \"**/*.md\"",
     "format:md": "prettier --write \"**/*.md\"",
-    "format:md:check": "prettier --check \"**/*.md\"",
-    "prepare": "git config core.hooksPath .githooks 2>/dev/null || true"
+    "format:md:check": "prettier --check \"**/*.md\""
   },
   "engines": {
     "node": "24.x"

@@ -1,14 +1,11 @@
 # News Card
 
-Bug or feature request? [Open an issue][new-issue]. Idea, question, or setup to share? [Start a
-discussion][discussions].
-
-[![hacs_badge][hacs-shield]][hacs] [![GitHub Release][releases-shield]][releases]
-[![License][license-shield]][license] ![Maintenance][maintenance-shield]
-[![Coverage][coverage-shield]][ci] [![Downloads][downloads-shield]][releases]
-
-[![CI][ci-shield]][ci] [![CodeQL][codeql-shield]][codeql]
-[![OpenSSF Scorecard][scorecard-shield]][scorecard] [![Socket.dev][socket-shield]][socket]
+<table>
+  <tr>
+    <td align="center"><img src="https://raw.githubusercontent.com/marcintk/ha-news-card/main/docs/preview-rss.png" alt="RSS preview" /><br /><sub>RSS feed</sub></td>
+    <td align="center"><img src="https://raw.githubusercontent.com/marcintk/ha-news-card/main/docs/preview-polymarket.png" alt="Polymarket preview" /><br /><sub>Polymarket events</sub></td>
+  </tr>
+</table>
 
 Home Assistant custom Lovelace card displaying news from RSS feeds and
 [Polymarket](https://polymarket.com) prediction events — one card, one plugin, a single unified
@@ -17,12 +14,17 @@ layout with a large thumbnail on the left and headline text on the right.
 Each card uses a single plugin (`rss` or `polymarket`). An RSS card rotates through its configured
 entities on a timer; a Polymarket card re-renders whenever the entity state changes.
 
-<table>
-  <tr>
-    <td align="center"><img src="https://raw.githubusercontent.com/marcintk/ha-news-card/main/docs/preview-rss.png" alt="RSS preview" /><br /><sub>RSS feed</sub></td>
-    <td align="center"><img src="https://raw.githubusercontent.com/marcintk/ha-news-card/main/docs/preview-polymarket.png" alt="Polymarket preview" /><br /><sub>Polymarket events</sub></td>
-  </tr>
-</table>
+[![hacs_badge][hacs-shield]][hacs] [![GitHub Release][releases-shield]][releases]
+[![License][license-shield]][license] [![Downloads][downloads-shield]][releases]
+[![Issues][issues-shield]][issues] [![PRs][prs-shield]][prs]
+[![Last Commit][last-commit-shield]][commits]
+
+[![Build and Test][ci-shield]][ci] [![Coverage][coverage-shield]][ci]
+[![CodeQL][codeql-shield]][codeql] [![OpenSSF][scorecard-shield]][scorecard]
+[![Socket.dev][socket-shield]][socket]
+
+Bug or feature request? [Open an issue][new-issue]. Idea, question, or setup to share? [Start a
+discussion][discussions].
 
 ## Requirements
 
@@ -148,30 +150,31 @@ Numbers are abbreviated: `1.2K`, `3.4M`, `5.6G`. The header label is derived aut
 `attributes.scene` as `PolyMarket (#<scene>)`. The Polymarket sensor is expected to rotate its own
 data externally; the card re-renders whenever the entity state changes.
 
-## Development
-
-See [CLAUDE.md](CLAUDE.md) for build commands, contributing guidelines, and release instructions.
-
 <!-- Reference links -->
 
-[new-issue]: https://github.com/marcintk/ha-news-card/issues/new
-[discussions]: https://github.com/marcintk/ha-news-card/discussions
-[hacs]: https://hacs.xyz
-[hacs-shield]: https://img.shields.io/badge/HACS-Custom-orange.svg
-[releases]: https://github.com/marcintk/ha-news-card/releases
-[releases-shield]: https://img.shields.io/github/release/marcintk/ha-news-card.svg
-[license]: https://github.com/marcintk/ha-news-card/blob/main/LICENSE
-[license-shield]: https://img.shields.io/github/license/marcintk/ha-news-card.svg
-[maintenance-shield]: https://img.shields.io/maintenance/yes/2026
 [ci]: https://github.com/marcintk/ha-news-card/actions/workflows/card-build-and-test.yml
 [ci-shield]:
-  https://github.com/marcintk/ha-news-card/actions/workflows/card-build-and-test.yml/badge.svg
-[coverage-shield]: https://img.shields.io/badge/coverage-100%25-brightgreen
-[downloads-shield]:
-  https://img.shields.io/github/downloads/marcintk/ha-news-card/total?label=downloads
+  https://img.shields.io/github/actions/workflow/status/marcintk/ha-news-card/card-build-and-test.yml?branch=main&label=Build%20and%20Test
 [codeql]: https://github.com/marcintk/ha-news-card/security/code-scanning
 [codeql-shield]:
   https://img.shields.io/github/actions/workflow/status/marcintk/ha-news-card/codeql-analysis.yml?branch=main&label=CodeQL
+[commits]: https://github.com/marcintk/ha-news-card/commits/main
+[coverage-shield]: https://img.shields.io/badge/coverage-100%25-brightgreen
+[discussions]: https://github.com/marcintk/ha-news-card/discussions
+[downloads-shield]:
+  https://img.shields.io/github/downloads/marcintk/ha-news-card/total?label=downloads
+[hacs]: https://hacs.xyz
+[hacs-shield]: https://img.shields.io/badge/HACS-Custom-orange.svg
+[issues]: https://github.com/marcintk/ha-news-card/issues
+[issues-shield]: https://img.shields.io/github/issues/marcintk/ha-news-card
+[last-commit-shield]: https://img.shields.io/github/last-commit/marcintk/ha-news-card
+[license]: https://github.com/marcintk/ha-news-card/blob/main/LICENSE
+[license-shield]: https://img.shields.io/github/license/marcintk/ha-news-card.svg
+[new-issue]: https://github.com/marcintk/ha-news-card/issues/new
+[prs]: https://github.com/marcintk/ha-news-card/pulls
+[prs-shield]: https://img.shields.io/github/issues-pr/marcintk/ha-news-card
+[releases]: https://github.com/marcintk/ha-news-card/releases
+[releases-shield]: https://img.shields.io/github/release/marcintk/ha-news-card.svg
 [scorecard]: https://securityscorecards.dev/viewer/?uri=github.com/marcintk/ha-news-card
 [scorecard-shield]:
   https://img.shields.io/ossf-scorecard/github.com/marcintk/ha-news-card?label=OpenSSF&style=flat

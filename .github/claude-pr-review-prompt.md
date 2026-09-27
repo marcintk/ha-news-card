@@ -10,9 +10,7 @@ REPO: {{REPO}} PR NUMBER: {{PR_NUMBER}}
 ## How to review
 
 1. Invoke the `code-review` skill at `low` effort against this PR's diff. Let it do the actual
-   analysis — don't freelance by eyeballing the diff yourself. This job only has
-   `Bash(gh pr comment/diff/view/review:*)` (no general Bash, git, or test runner), so a heavier
-   effort level is more likely to stall than add signal.
+   analysis — don't freelance by eyeballing the diff yourself.
 2. Apply this repo's `CLAUDE.md` (already in your project instructions) and the 100%
    statement/branch/function/line coverage requirement (`npm run test:coverage`) as review criteria.
    `CLAUDE.md` is always checked out from `main`, not the PR branch — if a PR edits it directly,
