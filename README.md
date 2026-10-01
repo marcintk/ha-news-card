@@ -162,7 +162,7 @@ data externally; the card re-renders whenever the entity state changes.
 [coverage-shield]: https://img.shields.io/badge/coverage-100%25-brightgreen
 [discussions]: https://github.com/marcintk/ha-news-card/discussions
 [downloads-shield]:
-  https://img.shields.io/github/downloads/marcintk/ha-news-card/total?label=downloads
+  https://img.shields.io/github/downloads/marcintk/ha-news-card/latest/card.js?label=downloads
 [hacs]: https://hacs.xyz
 [hacs-shield]: https://img.shields.io/badge/HACS-Custom-orange.svg
 [issues]: https://github.com/marcintk/ha-news-card/issues

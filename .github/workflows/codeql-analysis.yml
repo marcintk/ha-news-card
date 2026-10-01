@@ -5,13 +5,15 @@ on:
     branches: ["main"]
   schedule:
     - cron: "0 8 * * 1" # weekly, Monday 08:00 UTC
-  workflow_call:
+  pull_request:
+    branches: ["main"]
 
 permissions:
   contents: read
 
 jobs:
   analyze:
+    name: analyze
     runs-on: ubuntu-latest
     permissions:
       contents: read
