@@ -51,7 +51,7 @@ jobs:
           fi
           echo "Tag v$CURR is valid (previous release: v$PREV)"
 
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version: "24.x"
           cache: npm
@@ -78,7 +78,7 @@ jobs:
           subject-path: dist/card.js
 
       - name: Install cosign
-        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+        uses: sigstore/cosign-installer@756fe2d284c7292c4e9b62c8a28f1e5629c59532 # v4.1.3
 
       - name: Sign release artifact (keyless)
         run: |
