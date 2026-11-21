@@ -107,7 +107,7 @@ exports[`rssHtml > renders feed with title 1`] = `
               <img class="rss-thumb" src="http://img/b.jpg">
             </td>
             <td class="rss-text-cell">
-              <div class="rss-text-inner"><!--?-->Story B<span class="rss-time">&nbsp;(<!--?-->5m ago)</span></div>
+              <div class="rss-text-inner"><!--?-->Story B<!--?--><span class="rss-time">&nbsp;(<!--?-->5m ago)</span></div>
             </td>
           </tr>
         <!----><!---->
@@ -116,7 +116,7 @@ exports[`rssHtml > renders feed with title 1`] = `
               <img class="rss-thumb" src="https://brands.home-assistant.io/homeassistant/icon.png">
             </td>
             <td class="rss-text-cell">
-              <div class="rss-text-inner"><!--?-->Story A<span class="rss-time">&nbsp;(<!--?-->10m ago)</span></div>
+              <div class="rss-text-inner"><!--?-->Story A<!--?--><span class="rss-time">&nbsp;(<!--?-->10m ago)</span></div>
             </td>
           </tr>
         <!----><!---->
@@ -125,7 +125,7 @@ exports[`rssHtml > renders feed with title 1`] = `
               <img class="rss-thumb" src="https://brands.home-assistant.io/homeassistant/icon.png">
             </td>
             <td class="rss-text-cell">
-              <div class="rss-text-inner"><!--?-->Story C<span class="rss-time">&nbsp;(<!--?-->2h ago)</span></div>
+              <div class="rss-text-inner"><!--?-->Story C<!--?--><span class="rss-time">&nbsp;(<!--?-->2h ago)</span></div>
             </td>
           </tr>
         <!---->
@@ -160,7 +160,7 @@ exports[`rssHtml > renders with limit=1 (single entry) 1`] = `
               <img class="rss-thumb" src="http://img/b.jpg">
             </td>
             <td class="rss-text-cell">
-              <div class="rss-text-inner"><!--?-->Story B<span class="rss-time">&nbsp;(<!--?-->5m ago)</span></div>
+              <div class="rss-text-inner"><!--?-->Story B<!--?--><span class="rss-time">&nbsp;(<!--?-->5m ago)</span></div>
             </td>
           </tr>
         <!---->
