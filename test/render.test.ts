@@ -183,6 +183,57 @@ describe("rssHtml", () => {
     img.dispatchEvent(new Event("error"));
     expect(img.src).toBe(before);
   });
+
+  describe("boundaries", () => {
+    const age = (mins: number) =>
+      doc(rssHtml({ entries: [{ title: "X", last_updated: mins }] }, 1, "F")).querySelector(
+        ".rss-time"
+      )?.textContent;
+
+    it("switches from minutes to hours at exactly 60", () => {
+      expect(age(59)).toContain("(59m ago)");
+      expect(age(60)).toContain("(1h ago)");
+    });
+
+    it("switches from hours to days at exactly 24h", () => {
+      expect(age(23 * 60)).toContain("(23h ago)");
+      expect(age(24 * 60)).toContain("(1d ago)");
+    });
+  });
+
+  describe("published timezone detection", () => {
+    afterEach(() => vi.useRealTimers());
+    const ageOf = (published: string) => {
+      vi.useFakeTimers();
+      vi.setSystemTime(new Date("2026-11-20T12:00:00Z"));
+      return doc(rssHtml({ entries: [{ title: "X", published }] }, 1, "F")).querySelector(
+        ".rss-time"
+      )?.textContent;
+    };
+
+    it("honours a named zone abbreviation at the end", () => {
+      // EST = UTC-5 -> 07:00 EST is 12:00Z -> 0m
+      expect(ageOf("Fri, 20 Nov 2026 07:00:00 EST")).toContain("(0m ago)");
+    });
+
+    it("only treats a trailing zone as a timezone", () => {
+      // trailing "(CET)" is not a recognised trailing zone, so GMT is appended: 07:00Z -> 5h
+      expect(ageOf("Fri, 20 Nov 2026 07:00:00 +0100 (CET)")).toContain("(5h ago)");
+    });
+
+    it("does not treat an offset-like suffix with trailing junk as a timezone", () => {
+      expect(ageOf("UTC Fri, 20 Nov 2026 07:00:00")).toContain("(5h ago)");
+    });
+  });
+
+  it("does not reassign src when the fallback image errors", () => {
+    const el = doc(rssHtml({ entries: [{ title: "X" }] }, 1, "Feed"));
+    const img = el.querySelector<HTMLImageElement>(".rss-thumb")!;
+    const setter = vi.spyOn(HTMLImageElement.prototype, "src", "set");
+    img.dispatchEvent(new Event("error"));
+    expect(setter).not.toHaveBeenCalled();
+    setter.mockRestore();
+  });
 });
 
 describe("polymarketHtml", () => {
@@ -336,5 +387,65 @@ describe("polymarketHtml", () => {
       polymarketHtml({ ...attrs, events: [{ ...attrs.events[0], endsAt: past }] }, 1, 0)
     );
     expect(el.querySelector(".poly-ends")?.textContent).toContain("years ago");
+  });
+
+  describe("relative time boundaries", () => {
+    const NOW = new Date("2026-11-20T12:00:00Z").getTime();
+    const ends = (deltaSeconds: number, titleLen?: number) => {
+      vi.useFakeTimers();
+      vi.setSystemTime(NOW);
+      const endsAt = new Date(NOW + deltaSeconds * 1000).toISOString();
+      const el = doc(
+        polymarketHtml({ ...attrs, events: [{ ...attrs.events[0], endsAt }] }, 1, 0, titleLen)
+      );
+      return el.querySelector(".poly-ends")?.textContent;
+    };
+
+    it.each([
+      [-1, "ends 1 sec ago"],
+      [-2, "ends 2 secs ago"],
+      [-59, "ends 59 secs ago"],
+      [-60, "ends 1 min ago"],
+      [-119, "ends 1 min ago"],
+      [-3599, "ends 59 mins ago"],
+      [-3600, "ends 1 hr ago"],
+      [-86399, "ends 23 hrs ago"],
+      [-86400, "ends 1 day ago"],
+      [-2591999, "ends 29 days ago"],
+      [-2592000, "ends 1 month ago"],
+      [-31535999, "ends 12 months ago"],
+      [-31536000, "ends 1 year ago"],
+      [-63072000, "ends 2 years ago"],
+      [1, "ends in 1 sec"],
+      [2, "ends in 2 secs"],
+      [60, "ends in 1 min"],
+      [3600, "ends in 1 hr"],
+      [86400, "ends in 1 day"],
+      [2592000, "ends in 1 month"],
+      [31536000, "ends in 1 year"],
+      [2 * 31536000, "ends in 2 years"],
+    ])("delta %i s -> %s", (delta, expected) => {
+      expect(ends(delta)).toBe(expected);
+    });
+
+    it("shows a sub-second future as a past-style zero label", () => {
+      expect(ends(0.5)).toBe("ends 0 secs ago");
+      expect(ends(-0.5)).toBe("ends 0 secs ago");
+    });
+  });
+
+  describe("title truncation", () => {
+    const titled = (title: string, len: number) =>
+      doc(
+        polymarketHtml({ ...attrs, events: [{ ...attrs.events[0], title }] }, 1, 0, len)
+      ).querySelector(".poly-event-title")?.textContent;
+
+    it("keeps a title exactly at the limit", () => {
+      expect(titled("ABCDE", 5)).toBe("ABCDE");
+    });
+
+    it("truncates one char over the limit with an ellipsis", () => {
+      expect(titled("ABCDEF", 5)).toBe("ABCDE…");
+    });
   });
 });
