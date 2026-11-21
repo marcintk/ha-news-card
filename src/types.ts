@@ -30,6 +30,7 @@ export interface RssEntry {
   image?: string;
   picture?: string;
   last_updated?: number;
+  published?: string;
 }
 
 export interface RssAttributes {

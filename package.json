@@ -19,7 +19,8 @@
     "typecheck": "tsc --noEmit",
     "check:ci": "tsc --noEmit && biome check src/ test/ && prettier --check \"**/*.md\"",
     "format:md": "prettier --write \"**/*.md\"",
-    "format:md:check": "prettier --check \"**/*.md\""
+    "format:md:check": "prettier --check \"**/*.md\"",
+    "quantify": "node \"$(node -p \"require(process.env.HOME+'/.claude/plugins/installed_plugins.json').plugins['human-factor@marcintk-plugins'][0].installPath\")/src/tools/quantify.mjs\""
   },
   "engines": {
     "node": "24.x"
@@ -29,6 +30,8 @@
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-terser": "^1.0.0",
     "@rollup/plugin-typescript": "^12.3.0",
+    "@stryker-mutator/core": "^10.1.1",
+    "@stryker-mutator/vitest-runner": "^10.1.1",
     "@vitest/coverage-v8": "^5.0.1",
     "jsdom": "^30.1.1",
     "prettier": "^3.9.8",
