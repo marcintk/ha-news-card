@@ -37,7 +37,7 @@ describe("rssHtml", () => {
     expect(cells[2]?.textContent).toContain("Story C");
   });
 
-  it("sorts entries with missing last_updated as 0", () => {
+  it("sorts entries with no age last and hides their age", () => {
     const el = doc(
       rssHtml(
         {
@@ -52,9 +52,62 @@ describe("rssHtml", () => {
       )
     );
     const cells = el.querySelectorAll(".rss-text-cell");
-    expect(cells[0]?.textContent).toContain("No Time"); // 0
-    expect(cells[1]?.textContent).toContain("Mid Time"); // 3
-    expect(cells[2]?.textContent).toContain("Has Time"); // 5
+    expect(cells[0]?.textContent).toContain("Mid Time");
+    expect(cells[1]?.textContent).toContain("Has Time");
+    expect(cells[2]?.textContent).toContain("No Time");
+    expect(cells[2]?.querySelector(".rss-time")).toBeNull();
+  });
+
+  describe("published fallback", () => {
+    const rssWith = (entries: { title: string; published?: string; last_updated?: number }[]) =>
+      doc(rssHtml({ entries }, 10, "Feed"));
+
+    afterEach(() => vi.useRealTimers());
+
+    it("derives age from published with a numeric offset", () => {
+      vi.useFakeTimers();
+      vi.setSystemTime(new Date("2026-11-20T12:00:00Z"));
+      const el = rssWith([{ title: "X", published: "Fri, 20 Nov 2026 05:30:00 -0500" }]);
+      expect(el.querySelector(".rss-time")?.textContent).toContain("1h ago");
+    });
+
+    it("treats published without a timezone as UTC", () => {
+      vi.useFakeTimers();
+      vi.setSystemTime(new Date("2026-11-20T12:00:00Z"));
+      const el = rssWith([{ title: "X", published: "Fri, 20 Nov 2026 11:30:00 " }]);
+      expect(el.querySelector(".rss-time")?.textContent).toContain("30m ago");
+    });
+
+    it("prefers last_updated over published", () => {
+      const el = rssWith([
+        { title: "X", last_updated: 7, published: "Fri, 20 Nov 2026 11:30:00 GMT" },
+      ]);
+      expect(el.querySelector(".rss-time")?.textContent).toContain("7m ago");
+    });
+
+    it("clamps future published dates to 0m", () => {
+      vi.useFakeTimers();
+      vi.setSystemTime(new Date("2026-11-20T12:00:00Z"));
+      const el = rssWith([{ title: "X", published: "Fri, 20 Nov 2026 13:00:00 GMT" }]);
+      expect(el.querySelector(".rss-time")?.textContent).toContain("0m ago");
+    });
+
+    it("hides age when published is unparseable", () => {
+      const el = rssWith([{ title: "X", published: "not a date" }]);
+      expect(el.querySelector(".rss-time")).toBeNull();
+    });
+
+    it("sorts by published age, newest first", () => {
+      vi.useFakeTimers();
+      vi.setSystemTime(new Date("2026-11-20T12:00:00Z"));
+      const el = rssWith([
+        { title: "Old", published: "Thu, 19 Nov 2026 12:00:00 GMT" },
+        { title: "New", published: "Fri, 20 Nov 2026 11:00:00 GMT" },
+      ]);
+      const cells = el.querySelectorAll(".rss-text-cell");
+      expect(cells[0]?.textContent).toContain("New");
+      expect(cells[1]?.textContent).toContain("Old");
+    });
   });
 
   it("handles missing entries array", () => {
