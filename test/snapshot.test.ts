@@ -1,7 +1,7 @@
 import { render, type TemplateResult } from "lit";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { polymarketHtml, rssHtml } from "../src/render.js";
-import { snapHtml } from "./test-utils.js";
+import { minsAgo, NOW, snapHtml } from "./test-utils.js";
 
 function doc(template: TemplateResult): string {
   const el = document.createElement("div");
@@ -11,13 +11,20 @@ function doc(template: TemplateResult): string {
 
 const rssAttrs = {
   entries: [
-    { title: "Story A", last_updated: 10 },
-    { title: "Story B", last_updated: 5, image: "http://img/b.jpg" },
-    { title: "Story C", last_updated: 120 },
+    { title: "Story A", published: minsAgo(10) },
+    { title: "Story B", published: minsAgo(5), image: "http://img/b.jpg" },
+    { title: "Story C", published: minsAgo(120) },
   ],
 };
 
 describe("rssHtml", () => {
+  beforeAll(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(NOW);
+  });
+
+  afterAll(() => vi.useRealTimers());
+
   it("renders feed with title", () => {
     expect(doc(rssHtml(rssAttrs, 5, "My Feed"))).toMatchSnapshot();
   });

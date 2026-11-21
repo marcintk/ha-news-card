@@ -32,10 +32,10 @@ The card reads data from Home Assistant sensor entities. You need at least one o
 
 - **RSS plugin** — any HA integration that stores feed entries in a sensor's `attributes.entries`
   array (e.g. the [feedparser](https://github.com/custom-components/feedparser) HACS integration,
-  tested with 1.5.0). Each entry should expose `title`, and either `last_updated` (minutes since
-  published) or `published` (date string), and optionally `image` / `picture`.
+  tested with 1.5.0). Each entry should expose `title` and `published` (date string), and optionally
+  `image`.
 
-  feedparser has no `last_updated`, so the card uses `published`. Set these options on each feed:
+  Set these options on each feedparser feed:
 
   ```yaml
   sensor:
@@ -151,11 +151,10 @@ Set `source.plugin: polymarket`.
 
 ### RSS
 
-Reads `attributes.entries` from the entity, sorts by age ascending (most recent first; age is
-`last_updated`, else derived from `published`), and renders each entry as a row with a **75 × 67 px
-thumbnail** on the left and the headline plus relative age on the right. Alternating row backgrounds
-follow the HA theme: even rows use `--ha-card-background` (blends with the card surface), odd rows
-use `--secondary-background-color`.
+Reads `attributes.entries` from the entity, sorts by the age derived from `published` (most recent
+first), and renders each entry as a row with a **75 × 67 px thumbnail** on the left and the headline
+plus relative age on the right. Alternating row backgrounds follow the HA theme: even rows use
+`--ha-card-background` (blends with the card surface), odd rows use `--secondary-background-color`.
 
 Falls back to the Home Assistant logo (`https://brands.home-assistant.io/homeassistant/icon.png`)
 when an entry has no image or the image URL fails to load.

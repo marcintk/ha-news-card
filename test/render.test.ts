@@ -1,6 +1,7 @@
 import { render, type TemplateResult } from "lit";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { humanNumber, polymarketHtml, rssHtml } from "../src/render.js";
+import { minsAgo, NOW } from "./test-utils.js";
 
 function doc(template: TemplateResult): HTMLElement {
   const el = document.createElement("div");
@@ -16,11 +17,18 @@ describe("humanNumber", () => {
 });
 
 describe("rssHtml", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(NOW);
+  });
+
+  afterEach(() => vi.useRealTimers());
+
   const attrs = {
     entries: [
-      { title: "Story A", last_updated: 10 },
-      { title: "Story B", last_updated: 5, image: "http://img/b.jpg" },
-      { title: "Story C", last_updated: 120 },
+      { title: "Story A", published: minsAgo(10) },
+      { title: "Story B", published: minsAgo(5), image: "http://img/b.jpg" },
+      { title: "Story C", published: minsAgo(120) },
     ],
   };
 
@@ -29,7 +37,7 @@ describe("rssHtml", () => {
     expect(el.querySelector(".news-title")?.textContent).toBe("My Feed");
   });
 
-  it("sorts by last_updated ascending (smallest = most recent)", () => {
+  it("sorts by age, most recent first", () => {
     const el = doc(rssHtml(attrs, 5, "Feed"));
     const cells = el.querySelectorAll(".rss-text-cell");
     expect(cells[0]?.textContent).toContain("Story B");
@@ -42,9 +50,9 @@ describe("rssHtml", () => {
       rssHtml(
         {
           entries: [
-            { title: "Has Time", last_updated: 5 },
+            { title: "Has Time", published: minsAgo(5) },
             { title: "No Time" },
-            { title: "Mid Time", last_updated: 3 },
+            { title: "Mid Time", published: minsAgo(3) },
           ],
         },
         5,
@@ -59,7 +67,7 @@ describe("rssHtml", () => {
   });
 
   describe("published fallback", () => {
-    const rssWith = (entries: { title: string; published?: string; last_updated?: number }[]) =>
+    const rssWith = (entries: { title: string; published?: string }[]) =>
       doc(rssHtml({ entries }, 10, "Feed"));
 
     afterEach(() => vi.useRealTimers());
@@ -76,13 +84,6 @@ describe("rssHtml", () => {
       vi.setSystemTime(new Date("2026-11-20T12:00:00Z"));
       const el = rssWith([{ title: "X", published: "Fri, 20 Nov 2026 11:30:00 " }]);
       expect(el.querySelector(".rss-time")?.textContent).toContain("30m ago");
-    });
-
-    it("prefers last_updated over published", () => {
-      const el = rssWith([
-        { title: "X", last_updated: 7, published: "Fri, 20 Nov 2026 11:30:00 GMT" },
-      ]);
-      expect(el.querySelector(".rss-time")?.textContent).toContain("7m ago");
     });
 
     it("clamps future published dates to 0m", () => {
@@ -126,12 +127,12 @@ describe("rssHtml", () => {
   });
 
   it("shows hours ago", () => {
-    const el = doc(rssHtml({ entries: [{ title: "X", last_updated: 90 }] }, 1, "Feed"));
+    const el = doc(rssHtml({ entries: [{ title: "X", published: minsAgo(90) }] }, 1, "Feed"));
     expect(el.querySelector(".rss-time")?.textContent).toContain("1h ago");
   });
 
   it("shows days ago", () => {
-    const el = doc(rssHtml({ entries: [{ title: "X", last_updated: 1500 }] }, 1, "Feed"));
+    const el = doc(rssHtml({ entries: [{ title: "X", published: minsAgo(1500) }] }, 1, "Feed"));
     expect(el.querySelector(".rss-time")?.textContent).toContain("1d ago");
   });
 
@@ -141,14 +142,7 @@ describe("rssHtml", () => {
     expect(imgs[0]?.src).toContain("b.jpg");
   });
 
-  it("falls back to picture field when image absent", () => {
-    const el = doc(
-      rssHtml({ entries: [{ title: "X", picture: "http://img/pic.jpg" }] }, 1, "Feed")
-    );
-    expect(el.querySelector<HTMLImageElement>(".rss-thumb")?.src).toContain("pic.jpg");
-  });
-
-  it("falls back to default image when no image or picture", () => {
+  it("falls back to default image when no image", () => {
     const el = doc(rssHtml({ entries: [{ title: "X" }] }, 1, "Feed"));
     expect(el.querySelector<HTMLImageElement>(".rss-thumb")?.src).toContain(
       "brands.home-assistant.io"
@@ -186,7 +180,7 @@ describe("rssHtml", () => {
 
   describe("boundaries", () => {
     const age = (mins: number) =>
-      doc(rssHtml({ entries: [{ title: "X", last_updated: mins }] }, 1, "F")).querySelector(
+      doc(rssHtml({ entries: [{ title: "X", published: minsAgo(mins) }] }, 1, "F")).querySelector(
         ".rss-time"
       )?.textContent;
 

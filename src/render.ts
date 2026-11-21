@@ -1,5 +1,5 @@
 import { html, nothing, type TemplateResult } from "lit";
-import type { PolymarketAttributes, RssAttributes, RssEntry } from "./types.js";
+import type { PolymarketAttributes, RssAttributes } from "./types.js";
 
 const DEFAULT_IMAGE = "https://brands.home-assistant.io/homeassistant/icon.png";
 
@@ -17,16 +17,12 @@ function formatTimeMins(mins: number): string {
 
 const HAS_TIMEZONE = /(?:[+-]\d{2}:?\d{2}|\b(?:Z|GMT|UTC|[A-Z]{3,4}))\s*$/;
 
-function publishedAgeMins(published: string): number | undefined {
+function publishedAgeMins(published: string | undefined): number | undefined {
+  if (!published) return undefined;
   const text = published.trim();
   const parsed = new Date(HAS_TIMEZONE.test(text) ? text : `${text} GMT`).getTime();
   if (Number.isNaN(parsed)) return undefined;
   return Math.max(0, Math.floor((Date.now() - parsed) / 60000));
-}
-
-function entryAgeMins(entry: RssEntry): number | undefined {
-  if (typeof entry.last_updated === "number") return entry.last_updated;
-  return entry.published ? publishedAgeMins(entry.published) : undefined;
 }
 
 function formatRelativeTime(datetime: string): string {
@@ -55,7 +51,7 @@ function rowBg(i: number): string {
 
 export function rssHtml(attrs: RssAttributes, limit: number, title: string): TemplateResult {
   const entries = (attrs.entries ?? [])
-    .map((entry) => ({ entry, age: entryAgeMins(entry) }))
+    .map((entry) => ({ entry, age: publishedAgeMins(entry.published) }))
     .sort((a, b) => (a.age ?? Infinity) - (b.age ?? Infinity))
     .slice(0, limit);
 
@@ -70,7 +66,7 @@ export function rssHtml(attrs: RssAttributes, limit: number, title: string): Tem
         ({ entry: item, age }, i) => html`
           <tr style="background-color:${rowBg(i)}">
             <td class="rss-img-cell">
-              <img src="${item.image ?? item.picture ?? DEFAULT_IMAGE}" class="rss-thumb" @error=${onImgError} />
+              <img src="${item.image ?? DEFAULT_IMAGE}" class="rss-thumb" @error=${onImgError} />
             </td>
             <td class="rss-text-cell">
               <div class="rss-text-inner">${item.title}${age === undefined ? nothing : html`<span class="rss-time">&nbsp;(${formatTimeMins(age)})</span>`}</div>
