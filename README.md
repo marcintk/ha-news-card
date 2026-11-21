@@ -31,12 +31,31 @@ discussion][discussions].
 The card reads data from Home Assistant sensor entities. You need at least one of:
 
 - **RSS plugin** — any HA integration that stores feed entries in a sensor's `attributes.entries`
-  array (e.g. the [feedparser](https://github.com/custom-components/feedparser) HACS integration).
-  Each entry should expose `title`, and either `last_updated` (minutes since published) or
-  `published` (date string), and optionally `image` / `picture`. For feedparser, which has no
-  `last_updated`, set `date_format: '%a, %d %b %Y %H:%M:%S %z'` and include `published` in
-  `inclusions`. With `%Z` the timezone can print empty for feeds with a numeric offset, and the card
-  then assumes UTC.
+  array (e.g. the [feedparser](https://github.com/custom-components/feedparser) HACS integration,
+  tested with 1.5.0). Each entry should expose `title`, and either `last_updated` (minutes since
+  published) or `published` (date string), and optionally `image` / `picture`.
+
+  feedparser has no `last_updated`, so the card uses `published`. Set these options on each feed:
+
+  ```yaml
+  sensor:
+    - platform: feedparser
+      name: ABC Feed
+      feed_url: "https://abcnews.go.com/abcnews/usheadlines"
+      date_format: "%a, %d %b %Y %H:%M:%S %z"
+      inclusions:
+        - title
+        - image
+        - published
+  ```
+
+  - `date_format` must be set. feedparser's default (`%a, %b %d %I:%M %p`) has no year, so the card
+    would read every date as 2001 and show ages of thousands of days.
+  - Use `%z`, not `%Z`. For feeds with a numeric offset (e.g. `-0500`), `%Z` prints an empty
+    timezone and the card then assumes UTC, so ages are off by the offset.
+  - `image` must be listed in `inclusions`. feedparser only adds an image when it is listed, and
+    without one the card shows the Home Assistant logo.
+
 - **Polymarket plugin** — a sensor whose attributes contain an `events` array of Polymarket
   prediction markets (e.g. the [ha_polymarket](https://github.com/marcintk/ha_polymarket) HACS
   integration). Each event should expose `title`, `icon`, `liquidity`, `volume24hr`, `endsAt`, and a
