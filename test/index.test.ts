@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import "../src/index.js";
+import { minsAgo } from "./test-utils.js";
 
 function makeConn() {
   return { subscribeEvents: vi.fn().mockResolvedValue(() => {}) };
@@ -57,7 +58,7 @@ describe("HaNewsCard", () => {
     const card = makeCard();
     card.setConfig(rssConfig());
     card.hass = makeHass("sensor.abc_feed", {
-      entries: [{ title: "Headline 1", last_updated: 3 }],
+      entries: [{ title: "Headline 1", published: minsAgo(3) }],
     });
     const shadow = card.shadowRoot!;
     expect(shadow.querySelector(".news-title")?.textContent).toBe("ABC News");
@@ -135,7 +136,7 @@ describe("HaNewsCard", () => {
     card.hass = {
       connection: conn,
       states: {
-        "sensor.abc_feed": { attributes: { entries: [{ title: "New", last_updated: 1 }] } },
+        "sensor.abc_feed": { attributes: { entries: [{ title: "New", published: minsAgo(1) }] } },
       },
     };
     vi.runAllTimers();
@@ -154,11 +155,15 @@ describe("HaNewsCard", () => {
     };
     card.hass = {
       connection: conn,
-      states: { "sensor.abc_feed": { attributes: { entries: [{ title: "A", last_updated: 1 }] } } },
+      states: {
+        "sensor.abc_feed": { attributes: { entries: [{ title: "A", published: minsAgo(1) }] } },
+      },
     };
     card.hass = {
       connection: conn,
-      states: { "sensor.abc_feed": { attributes: { entries: [{ title: "B", last_updated: 2 }] } } },
+      states: {
+        "sensor.abc_feed": { attributes: { entries: [{ title: "B", published: minsAgo(2) }] } },
+      },
     };
     vi.runAllTimers();
     expect(card.shadowRoot!.querySelector(".rss-text-cell")?.textContent).toContain("B");

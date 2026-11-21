@@ -28,8 +28,7 @@ export interface CardConfig {
 export interface RssEntry {
   title: string;
   image?: string;
-  picture?: string;
-  last_updated?: number;
+  published?: string;
 }
 
 export interface RssAttributes {

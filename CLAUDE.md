@@ -15,6 +15,7 @@ npm run test:coverage  # run with coverage (must stay at 100%)
 npm run typecheck      # tsc --noEmit
 npm run check          # biome lint + format (src/ and test/, auto-fix)
 npm run format:md      # prettier for markdown files
+npx stryker run --mutate src/<file>.ts  # mutation testing (StrykerJS, on demand)
 npm run check:ci       # CI gate: typecheck + biome check + prettier check
 ```
 
